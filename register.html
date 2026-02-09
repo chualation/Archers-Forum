@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archer's Forum | Register</title>
+  <link rel="icon" href="assets/logo_3.png">
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="card">
+      <!-- Left panel -->
+      <aside class="left">
+
+        <!-- Background video -->
+        <video
+          id="bgVideo"
+          class="bgvid"
+          src="assets/video.mp4"
+          muted
+          loop
+          playsinline>
+        </video>
+        <div class="left-overlay"></div>
+
+        <!-- Login/Register navigation -->
+        <div class="auth-toggle" data-active="register">
+          <div class="toggle-indicator"></div>
+          <a class="toggle-item" data-target="login" href="login.html">Login</a>
+          <a class="toggle-item" data-target="register" href="register.html">Register</a>
+        </div>
+      </aside>
+
+      <!-- Right panel -->
+      <section class="right">
+
+        <!-- Logo -->
+        <header class="brand">
+          <img src="assets/logo.png" alt="Archer's Forum" class="brand-logo">
+        </header>
+
+        <!-- Page heading -->
+        <h1 class="title">Create Account</h1>
+        <p class="subtitle">enter your details to register</p>
+
+        <!-- Registration form -->
+        <form id="authForm" data-mode="register" class="form" novalidate>
+
+          <!-- Name field -->
+          <label class="field">
+            <span class="label">Name</span>
+            <input name="name" type="text" required>
+          </label>
+
+          <!-- Email field -->
+          <label class="field">
+            <span class="label">Email</span>
+            <input name="email" type="email" required>
+          </label>
+
+          <!-- Password field -->
+          <label class="field">
+            <span class="label">Password</span>
+            <div class="pw-wrap">
+              <input id="password" name="password" type="password" required>
+
+              <!-- Show/Hide password -->
+              <img
+                id="togglePw"
+                class="eye-icon"
+                src="assets/show_pass.png"
+                alt="Show password">
+            </div>
+          </label>
+
+          <!-- Submit button -->
+          <button class="btn" type="submit">Register</button>
+          <p class="msg" id="authMsg"></p>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/auth.js"></script>
+  
+</body>
+</html>
