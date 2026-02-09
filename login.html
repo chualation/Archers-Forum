@@ -14,18 +14,19 @@
       <!-- Left panel -->
       <aside class="left">
 
-        <!-- Background video -->
+        <!-- Video -->
         <video
           id="bgVideo"
           class="bgvid"
           src="assets/video.mp4"
           muted
           loop
-          playsinline>
+          playsinline
+          preload="auto">
         </video>
         <div class="left-overlay"></div>
 
-        <!-- Login/Register navigation -->
+        <!-- Login/Register toggle -->
         <div class="auth-toggle" data-active="login">
           <div class="toggle-indicator"></div>
           <a class="toggle-item" data-target="login" href="login.html">Login</a>
@@ -36,7 +37,7 @@
       <!-- Right panel -->
       <section class="right">
 
-        <!-- Logo-->
+        <!-- Logo -->
         <header class="brand">
           <img src="assets/logo.png" alt="Archer's Forum" class="brand-logo">
         </header>
@@ -48,24 +49,18 @@
         <!-- Login form -->
         <form id="authForm" data-mode="login" class="form" novalidate>
 
-          <!-- Email field -->
+          <!-- Email -->
           <label class="field">
             <span class="label">Email</span>
-            <input id="email" name="email" type="email" required>
+            <input id="email" name="email" class="input" type="email" required>
           </label>
 
-          <!-- Password field -->
+          <!-- Password -->
           <label class="field">
             <span class="label">Password</span>
             <div class="pw-wrap">
-              <input id="password" name="password" type="password" required>
-
-              <!-- Show/Hide password -->
-              <img
-                id="togglePw"
-                class="eye-icon"
-                src="assets/show_pass.png"
-                alt="Show password">
+              <input id="password" name="password" class="input" type="password" required>
+              <img id="togglePw" class="eye-icon" src="assets/show_pass.png" alt="Show password">
             </div>
           </label>
 
@@ -74,7 +69,6 @@
           <p class="msg" id="authMsg"></p>
         </form>
       </section>
-
     </section>
   </main>
 
