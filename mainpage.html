@@ -1,94 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Archer's Forum | Main Page</title>
-  <link rel="icon" href="assets/logo_3.png" />
   <link rel="stylesheet" href="main_page.css" />
 </head>
-<body>
 
+<body>
+  <!-- Header -->
   <header class="main-header">
     <div class="header-left">
-      <img src="assets/logo_3.png" alt="Logo" class="nav-logo">
-      <span class="brand-name">Archer's Forum</span>
+      <img class="nav-logo" src="assets/logo_2.png" alt="Archer's Forum Logo" />
     </div>
+
     <div class="header-center">
       <div class="search-wrapper">
-        <input type="text" placeholder="Search posts, tags, or categories...">
+        <input id="searchInput" type="text" placeholder="Search posts, tags, or categories..." />
       </div>
     </div>
+
     <div class="header-right">
-        <div class="nav-icons">
-            <img src="assets/bell.png" alt="Notifications" class="nav-bell-img">
-    <div class="user-pill">
-      <img src="assets/profile.png" alt="Admin" class="user-avatar-img">
-        <span class="user-name">Admin</span> </div>
-    <button class="btn-logout">Logout</button>
-  </div>
-</div>
+      <a class="profile-link" id="profileLink" href="profile.html" title="View Profile">
+        <img class="user-avatar-img" src="assets/profile.png" alt="User" />
+        <span class="user-name">User</span>
+      </a>
+      <button class="btn-logout" type="button">Logout</button>
+    </div>
   </header>
 
-  <div class="layout-container">
-    
-    <aside class="sidebar-left">
+
+  <!-- 3-Column Layout -->
+  <main class="layout-container">
+    <!-- Left Column -->
+    <section>
       <div class="content-card">
+        <!-- Categories-->
         <h3>Categories</h3>
-        <ul class="category-menu">
-          <li class="active">All</li>
-          <li>Academics</li>
-          <li>Events</li>
-          <li>Organizations</li>
-          <li>Buy & Sell</li>
-          <li>General Questions</li>
-          <li>Professor Reviews</li>
+        <ul class="category-menu" id="categoryMenu">
+          <li class="active" data-category="All">All</li>
+          <li data-category="Academics">Academics</li>
+          <li data-category="Events">Events</li>
+          <li data-category="Organizations">Organizations</li>
+          <li data-category="Buy &amp; Sell">Buy &amp; Sell</li>
+          <li data-category="General Questions">General Questions</li>
+          <li data-category="Professor Reviews">Professor Reviews</li>
         </ul>
       </div>
-      <div class="content-card">
-        <h3>Tags</h3>
-        <p class="placeholder-text">No tags yet</p>
-      </div>
-    </aside>
 
-    <main class="feed-section">
+      <div class="content-card">
+        <!-- Tags-->
+        <h3>Tags</h3>
+        <div class="chips-wrap" id="allTagsChips">
+          <p class="placeholder-text" id="noTagsText">No tags yet</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Center Column -->
+    <section>
       <div class="post-input-container">
-        <input type="text" placeholder="Add a new thread...">
-        <button class="plus-btn">+</button>
+        <!-- Create Post -->
+        <input id="quickPostTitle" type="text" placeholder="Add a new thread..." maxlength="80" />
+        <button class="plus-btn" id="openComposerBtn" type="button" title="Create Post">
+          <img class="plus-icon-img" src="assets/create_post.png" alt="Create" />
+        </button>
       </div>
 
       <div class="feed-header">
-        <h2>All Posts</h2>
-        <div class="filter-dropdown">
-          <span>Newest</span>
-          <span class="arrow">▼</span>
+        <h3 id="feedTitle">All Posts</h3>
+        <div class="sort-wrap">
+          <span class="sr-only">Sort</span>
+
+          <!-- Filter -->
+          <div class="dropdown" id="sortDropdown">
+            <button class="dropdown-btn" id="sortBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <span id="sortLabel">Newest</span>
+              <span class="dropdown-caret">▾</span>
+            </button>
+
+            <div class="dropdown-menu" id="sortMenu" role="listbox" aria-label="Sort options">
+              <button class="dropdown-item selected" type="button" role="option" data-value="newest">Newest</button>
+              <button class="dropdown-item" type="button" role="option" data-value="oldest">Oldest</button>
+              <button class="dropdown-item" type="button" role="option" data-value="top">Trending</button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="empty-feed-card">
-        <h3>No posts yet</h3>
+      <div id="feedEmpty" class="empty-feed-card">
+        <h2>No posts yet</h2>
         <p>Start a discussion by creating the first post!</p>
-        <button class="btn-create">Create Post</button>
+        <button class="btn-create" id="createFirstBtn" type="button">Create Post</button>
       </div>
-    </main>
 
-    <aside class="sidebar-right">
+      <div id="postsFeed" class="posts-feed"></div>
+    </section>
+
+    <!-- Right Column -->
+    <section>
       <div class="content-card">
+        <!-- Trending Tags-->
         <h3>Trending Tags</h3>
-        <p class="placeholder-text">No trending tags yet</p>
+        <div class="chips-wrap" id="trendingTags">
+          <p class="placeholder-text" id="noTrendingText">No trending tags yet</p>
+        </div>
       </div>
+
       <div class="content-card rules-card">
+        <!-- Community Rules-->
         <h3>Community Rules</h3>
         <ol>
-          <li>Follow etiquette.</li>
-          <li>Be respectful & civil to all.</li>
-          <li>No drawing, harassment, or hate speech.</li>
-          <li>Use the category and tags correctly to avoid confusion.</li>
+          <li>Follow Archtiquette.</li>
+          <li>Be respectful &amp; civil to all.</li>
+          <li>No doxxing, harassment, or hate speech.</li>
+          <li>Use category and tags correctly to avoid confusion.</li>
           <li>No posting of NSFW content.</li>
-          <li>No Scalping and Unjust Enlistment.</li>
+          <li>No scalping and unjust enlistment.</li>
         </ol>
       </div>
-    </aside>
+    </section>
+  </main>
+
+  <!-- Create Post Modal -->
+  <div class="modal-overlay" id="composerOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="composerTitle">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <img class="modal-title-icon" src="assets/create_post.png" alt="" />
+          <h2 id="composerTitle">Create Post</h2>
+        </div>
+        <button class="modal-close" id="closeComposerBtn" type="button" aria-label="Close">×</button>
+      </div>
+
+      <form id="createPostForm">
+        <div class="form-row">
+          <label for="postTitle">Title</label>
+          <input id="postTitle" type="text" maxlength="80" placeholder="e.g., Whats the best GE course?" required />
+          <div class="help-text"><span id="titleCount">0</span>/80</div>
+        </div>
+
+        <div class="form-row">
+          <label for="postCategory">Category</label>
+          <select id="postCategory" required>
+            <option value="" disabled selected>Select a category</option>
+            <option>Academics</option>
+            <option>Events</option>
+            <option>Organizations</option>
+            <option>Buy &amp; Sell</option>
+            <option>General Questions</option>
+            <option>Professor Reviews</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="postTags">Tags (comma separated)</label>
+          <input id="postTags" type="text" placeholder="e.g., frosh, enlistment, profs" />
+        </div>
+
+        <div class="form-row">
+          <label for="postBody">Body</label>
+          <textarea id="postBody" rows="6" placeholder="Write your post here..." required></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" id="cancelComposerBtn" type="button">Cancel</button>
+          <button class="btn-primary" type="submit">Post</button>
+        </div>
+      </form>
+    </div>
   </div>
+
+  <!-- Post Detail Modal -->
+  <div class="modal-overlay" id="detailOverlay" aria-hidden="true">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <div class="modal-header">
+        <h2 id="detailTitle">Post</h2>
+        <button class="modal-close" id="closeDetailBtn" type="button" aria-label="Close">×</button>
+      </div>
+
+      <div id="detailContent" class="detail-content"></div>
+
+      <div class="detail-comments">
+        <h3 class="detail-subtitle">Comments</h3>
+
+        <form id="commentForm" class="comment-form">
+          <textarea id="commentText" rows="3" placeholder="Write a comment..." required></textarea>
+          <div class="comment-actions">
+            <button class="btn-primary" type="submit">Comment</button>
+          </div>
+        </form>
+
+        <div id="commentsList" class="comments-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="mainpage.js"></script>
 </body>
+
 </html>
