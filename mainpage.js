@@ -1,1366 +1,1216 @@
-:root {
-  --primary-green: #143621;
-  --accent-green: #1f703c;
-  --bg-sage: #e1ede3;
-  --white: #ffffff;
-  --mint-light: #d6f0e0;
+(function () {
+  const name = localStorage.getItem("af_user");
+  const email = localStorage.getItem("af_user_email");
 
-  --text: #1f2937;
-  --muted: #6b7280;
-
-  --border: rgba(31, 41, 55, 0.12);
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-
-  --radius: 16px;
-
-  /* NEW: soft vote hover colors */
-  --upvote-soft: rgba(31, 112, 60, 0.14);
-  --upvote-border: rgba(31, 112, 60, 0.30);
-  --upvote-text: rgba(31, 112, 60, 0.95);
-
-  --downvote-soft: rgba(220, 38, 38, 0.12);
-  --downvote-border: rgba(220, 38, 38, 0.28);
-  --downvote-text: rgba(153, 27, 27, 0.95);
-}
-
-/* reset and scrollbar */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-
-  scrollbar-width: thin;
-  scrollbar-color: rgba(20, 54, 33, 0.45) rgba(0, 0, 0, 0);
-}
-
-*::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-*::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0);
-}
-*::-webkit-scrollbar-thumb {
-  background: rgba(20, 54, 33, 0.35);
-  border-radius: 999px;
-  border: 2px solid rgba(0, 0, 0, 0);
-  background-clip: padding-box;
-}
-*::-webkit-scrollbar-thumb:hover {
-  background: rgba(20, 54, 33, 0.5);
-}
-
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg-sage);
-  color: var(--text);
-
-  /* page transition */
-  transition: opacity 260ms ease, transform 260ms ease;
-}
-
-body.is-leaving {
-  opacity: 0;
-  transform: translateY(6px);
-}
-
-/* headers & text */
-.main-header {
-  background: linear-gradient(135deg, #143621 0%, #1f703c 55%, #143621 100%);
-  color: #fff;
-
-  height: 78px;
-  padding: 12px 40px;
-
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  align-items: center;
-
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.nav-logo {
-  height: 44px;
-  width: auto;
-  object-fit: contain;
-}
-
-.header-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 0;
-}
-
-.search-wrapper {
-  position: relative; 
-  width: min(720px, 100%);
-}
-
-.search-wrapper input {
-  width: 100%;
-  padding: 12px 22px;
-  border-radius: 999px;
-  border: none;
-  outline: none;
-
-  background: rgba(255, 255, 255, 0.95);
-  color: #111;
-  font-weight: 600;
-}
-
-.search-history-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
-  background-color: #ffffff !important; 
-  color: #1f2937 !important;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 16px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  display: none; 
-  flex-direction: column;
-  padding: 8px;
-  z-index: 2000 !important; 
-}
-
-.search-history-dropdown.show {
-  display: flex;
-}
-
-.history-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-radius: 10px;
-  color: #1f2937 !important;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.history-item:hover {
-  background: #f3f4f6; 
-  color: #143621 !important;
-}
-
-.history-item .delete-history {
-  color: #999;
-  font-size: 18px;
-  padding: 4px 8px;
-}
-
-.history-item .delete-history:hover {
-  color: #dc2626;
-}
-
-.history-header {
-  padding: 8px 16px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  color: #6b7280 !important; 
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 5px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end; 
-  gap: 14px;
-}
-
-.profile-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-
-  padding: 8px 12px;
-  border-radius: 999px;
-
-  text-decoration: none;
-  color: #fff;
-
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
-}
-.profile-link:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.logo-link {
-  display: flex;
-  align-items: center;
-  transition: opacity 0.2s ease;
-}
-
-.logo-link:hover {
-  opacity: 0.8; 
-}
-
-.user-avatar-img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-
-.user-name {
-  font-weight: 900;
-  white-space: nowrap;
-}
-
-.btn-logout {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-
-  padding: 10px 18px;
-  cursor: pointer;
-  font-weight: 900;
-}
-.btn-logout:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-/* layout & cards */
-.layout-container {
-  display: grid;
-  grid-template-columns: 280px 1fr 280px;
-  gap: 25px;
-  padding: 30px 50px;
-
-  max-width: 1600px;
-  margin: 0 auto;
-
-  overflow: visible;
-}
-
-.content-card,
-.empty-feed-card {
-  background: var(--white);
-  border-radius: 25px;
-  padding: 25px;
-  margin-bottom: 20px;
-
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-/* NEW: subtle clean hover animation for general cards */
-@media (hover: hover) {
-  .content-card,
-  .empty-feed-card,
-  .post-input-container,
-  .rf-post,
-  .modal {
-    transition:
-      transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 180ms ease,
-      border-color 180ms ease,
-      background 180ms ease;
-    will-change: transform;
+  if (!name || !email) {
+    window.location.href = "login.html";
+    return;
   }
 
-  .content-card:hover,
-  .post-input-container:hover,
-  .modal:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.08);
+  // smooth fade-in on page load
+  document.body.classList.add("is-ready");
+
+  function navigateWithFade(href) {
+    document.body.classList.add("is-leaving");
+    window.setTimeout(() => {
+      window.location.href = href;
+    }, 260);
   }
 
-  /* NEW: feed post hover has a tiny accent "lift + border tint" */
-  .rf-post:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.10);
-    background: #f3f4f6;
+  // smooth page transitions for profile link
+  const profileLink = document.getElementById("profileLink");
+  if (profileLink) {
+    profileLink.addEventListener("click", (e) => {
+      const href = profileLink.getAttribute("href");
+      if (!href) return;
+      e.preventDefault();
+      navigateWithFade(href);
+    });
+  }
+
+  // smooth page transition for the logo link
+  const logoLink = document.getElementById("logoLink");
+  if (logoLink) {
+    logoLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      navigateWithFade("mainpage.html");
+    });
+  }
+
+  // Set name in header
+  const nameEl = document.querySelector(".user-name");
+  if (nameEl) nameEl.textContent = name;
+
+  // Logout
+  const logoutBtn = document.querySelector(".btn-logout");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("af_user");
+      localStorage.removeItem("af_user_email");
+      localStorage.removeItem("af_user_password");
+      navigateWithFade("login.html");
+    });
+  }
+
+  // Storage helpers
+  const POSTS_KEY = AF_STORAGE.KEYS.POSTS;
+  const VOTES_KEY = AF_STORAGE.KEYS.VOTES;
+
+  function loadJSON(key, fallback) {
+    return AF_STORAGE.load(key, fallback);
+  }
+
+  function saveJSON(key, value) {
+    AF_STORAGE.save(key, value);
+  }
+
+  // utilities
+  function makeId(prefix) {
+    return (
+      (prefix || "id") +
+      "_" +
+      Date.now() +
+      "_" +
+      Math.random().toString(16).slice(2)
+    );
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function formatDate(ts) {
+    const d = new Date(ts);
+    return d.toLocaleString(undefined, {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  function normalizeTags(input) {
+    if (!input) return [];
+    return input
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean)
+      .map((t) => t.replace(/\s+/g, " "))
+      .slice(0, 8);
+  }
+
+  // NEW: category slug helper
+  function categorySlug(cat) {
+    return String(cat || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
+
+  // confirmation modals
+  function showConfirmModal(
+    { title, message, confirmText, cancelText, danger },
+    onConfirm,
+  ) {
+    const existing = document.getElementById("afConfirmOverlay");
+    if (existing) existing.remove();
+
+    const overlay = document.createElement("div");
+    overlay.id = "afConfirmOverlay";
+    overlay.className = "af-confirm-overlay";
+
+    overlay.innerHTML = `
+      <div class="af-confirm-card" role="dialog" aria-modal="true" aria-labelledby="afConfirmTitle">
+        <div class="af-confirm-header">
+          <h3 id="afConfirmTitle" class="af-confirm-title">${escapeHtml(
+            title || "Confirm",
+          )}</h3>
+          <button class="af-confirm-x" type="button" aria-label="Close">✕</button>
+        </div>
+
+        <p class="af-confirm-message">${escapeHtml(message || "")}</p>
+
+        <div class="af-confirm-actions">
+          <button class="af-confirm-btn" type="button" data-af-action="cancel">${escapeHtml(
+            cancelText || "Cancel",
+          )}</button>
+          <button
+            class="af-confirm-btn ${
+              danger ? "af-confirm-btn--danger" : "af-confirm-btn--primary"
+            }"
+            type="button"
+            data-af-action="confirm"
+          >
+            ${escapeHtml(confirmText || "Confirm")}
+          </button>
+        </div>
+      </div>
+    `;
+
+    function close() {
+      overlay.classList.remove("open");
+      window.setTimeout(() => overlay.remove(), 140);
+      document.removeEventListener("keydown", onKey);
     }
-}
 
-.content-card h3 {
-  font-size: 0.95rem;
-  margin-bottom: 15px;
-  color: #111;
-  font-weight: 800;
-}
+    function onKey(e) {
+      if (e.key === "Escape") close();
+    }
 
-.rules-card ol {
-  padding-left: 18px;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  color: #444;
-}
+    document.addEventListener("keydown", onKey);
 
-.placeholder-text {
-  color: #aaa;
-  font-size: 0.85rem;
-}
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) close();
+    });
 
-.chips-wrap {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+    overlay.querySelector(".af-confirm-x").addEventListener("click", close);
+    overlay
+      .querySelector('[data-af-action="cancel"]')
+      .addEventListener("click", close);
 
-/* Categories */
-.category-menu {
-  list-style: none;
-}
-.category-menu li {
-  padding: 12px;
-  margin-bottom: 8px;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  text-align: center;
+    overlay
+      .querySelector('[data-af-action="confirm"]')
+      .addEventListener("click", () => {
+        close();
+        if (typeof onConfirm === "function") onConfirm();
+      });
 
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
-}
-.category-menu li.active {
-  background: var(--mint-light);
-  border-color: #b5d6c1;
-  color: var(--primary-green);
-}
-.category-menu li:hover:not(.active) {
-  background: #f8faf9;
-  transform: translateY(-1px);
-}
+    document.body.appendChild(overlay);
 
-/* Login/Register shared styles */
-.post-input-container {
-  background: white;
-  padding: 15px;
-  border-radius: 15px;
-  display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-}
-.post-input-container input {
-  flex: 1;
-  border: none;
-  background: #f1f3f1;
-  padding: 12px;
-  border-radius: 10px;
-  outline: none;
-  cursor: pointer; 
-}
+    window.setTimeout(() => overlay.classList.add("open"), 0);
 
-.plus-btn {
-  background: var(--primary-green);
-  border: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition: transform 140ms cubic-bezier(.2, 1.25, .22, 1);
-}
-.plus-btn:hover {
-  filter: brightness(1.05);
-  transform: translateY(-2px) scale(1.03);
-}
-.plus-btn:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.plus-icon-img {
-  width: 22px;
-  height: 22px;
-  filter: brightness(0) invert(1);
-}
-
-.feed-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  position: relative;
-  z-index: 100; 
-  overflow: visible;
-}
-
-.posts-feed {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-
-  /* needed so dropdown isn't clipped */
-  overflow: visible;
-}
-
-.empty-feed-card {
-  text-align: center;
-  padding: 80px 20px;
-  border: 2px dashed #eee;
-}
-
-/* buttons */
-.btn-primary,
-.btn-create {
-  background: var(--accent-green);
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 999px;
-  font-weight: 800;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: transform 140ms cubic-bezier(.2, 1.25, .22, 1), filter 140ms ease;
-}
-.btn-primary:hover,
-.btn-create:hover {
-  filter: brightness(1.04);
-  transform: translateY(-2px) scale(1.02);
-}
-.btn-primary:active,
-.btn-create:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.btn-secondary {
-  background: #eef5f0;
-  color: var(--primary-green);
-  border: 1px solid #d7e6dc;
-  padding: 12px 22px;
-  border-radius: 999px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform 140ms cubic-bezier(.2, 1.25, .22, 1);
-}
-.btn-secondary:hover {
-  transform: translateY(-2px) scale(1.02);
-}
-.btn-secondary:active {
-  transform: translateY(0) scale(0.98);
-}
-
-/* Tags/chips */
-.chip,
-.tag-chip {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: var(--mint-light);
-  border: 1px solid #b5d6c1;
-  color: var(--primary-green);
-  font-weight: 900;
-  font-size: 0.78rem;
-  cursor: pointer;
-}
-.chip:hover,
-.tag-chip:hover {
-  filter: brightness(0.98);
-}
-
-/* dropdowns */
-.dropdown {
-  position: relative;
-  display: inline-block;
-  min-width: 190px;
-  z-index: 250;
-  overflow: visible;
-}
-
-.dropdown-btn {
-  width: 100%;
-  height: 42px;
-  padding: 10px 14px;
-  border-radius: 999px;
-
-  background: #ffffff;
-  color: #111;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-
-  font-weight: 900;
-  cursor: pointer;
-  user-select: none;
-}
-
-.dropdown-btn:hover {
-  background: rgba(214, 240, 224, 0.65);
-  border-color: rgba(31, 112, 60, 0.25);
-}
-
-.dropdown-btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(31, 112, 60, 0.18);
-  border-color: rgba(31, 112, 60, 0.35);
-}
-
-.dropdown-caret {
-  color: rgba(17, 17, 17, 0.75);
-  font-size: 14px;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  width: 100%;
-
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
-
-  padding: 6px;
-  display: none;
-
-  z-index: 500;
-}
-
-.dropdown.open .dropdown-menu {
-  display: block;
-  transform-origin: top right;
-  animation: afDropdownPop 320ms cubic-bezier(.2, 1.25, .22, 1) both;
-}
-
-@keyframes afDropdownPop {
-  0%   { opacity: 0; transform: translateY(-6px) scale(0.96); }
-  70%  { opacity: 1; transform: translateY(2px)  scale(1.02); }
-  100% { opacity: 1; transform: translateY(0)   scale(1); }
-}
-
-.dropdown-item {
-  width: 100%;
-  text-align: left;
-  padding: 10px 12px;
-  border: none;
-  background: transparent;
-  border-radius: 12px;
-
-  font-weight: 900;
-  color: #111;
-  cursor: pointer;
-}
-.dropdown-item:hover {
-  background: rgba(214, 240, 224, 0.6);
-}
-.dropdown-item.selected {
-  background: rgba(31, 112, 60, 0.12);
-  color: var(--primary-green);
-}
-
-/* post cards theme */
-.rf-post {
-  display: grid;
-  grid-template-columns: 64px 1fr;
-  gap: 12px;
-
-  background: #fff;
-  border: 1px solid rgba(31, 41, 55, 0.1);
-  border-radius: 16px;
-  padding: 14px 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-
-  position: relative;
-  z-index: 1;
-}
-
-.rf-vote {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding-top: 2px;
-}
-
-/* NEW: upvote/downvote hover colors (soft) */
-.rf-vote-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  border: 1px solid rgba(16, 24, 40, 0.1);
-  background: #fff;
-  cursor: pointer;
-  color: rgba(17, 17, 17, 0.85);
-
-  transition:
-    transform 120ms cubic-bezier(.2, 1.25, .22, 1),
-    background 120ms ease,
-    border-color 120ms ease,
-    color 120ms ease;
-}
-
-.rf-vote-btn:hover {
-  transform: translateY(-2px) scale(1.03);
-  border-color: rgba(16, 24, 40, 0.18);
-}
-
-.rf-vote-btn:active {
-  transform: translateY(0) scale(0.98);
-}
-
-/* Target upvote vs downvote by position */
-.rf-vote-btn[aria-label="Upvote"]:hover {
-  background: var(--upvote-soft);
-  border-color: var(--upvote-border);
-  color: var(--upvote-text);
-}
-
-.rf-vote-btn[aria-label="Downvote"]:hover {
-  background: var(--downvote-soft);
-  border-color: var(--downvote-border);
-  color: var(--downvote-text);
-}
-
-/* Active states keep the tint */
-.rf-vote-btn.active {
-  background: rgba(214, 240, 224, 0.65);
-  border-color: #b5d6c1;
-}
-
-/* If active is upvote, push it a bit greener; if active is downvote, a bit redder
-   (works because the active button is the one clicked) */
-.rf-vote-btn.active[aria-label="Upvote"] {
-  background: rgba(31, 112, 60, 0.14);
-  border-color: rgba(31, 112, 60, 0.30);
-  color: var(--upvote-text);
-}
-.rf-vote-btn.active[aria-label="Downvote"] {
-  background: rgba(220, 38, 38, 0.12);
-  border-color: rgba(220, 38, 38, 0.28);
-  color: var(--downvote-text);
-}
-
-.rf-score {
-  font-weight: 900;
-  font-size: 14px;
-  color: #111827;
-  min-width: 28px;
-  text-align: center;
-}
-
-.rf-main {
-  min-width: 0;
-}
-
-.rf-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-
-  font-size: 13px;
-  color: rgba(17, 24, 39, 0.7);
-}
-
-.rf-pill {
-  font-size: 12px;
-  font-weight: 900;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--mint-light);
-  border: 1px solid #b5d6c1;
-  color: var(--primary-green);
-}
-
-/* catergory colors*/
-.category-menu li[data-category="All"].active {
-  background: #e5f5ec;
-  border-color: #bfe3cf;
-  color: var(--primary-green);
-}
-
-/* Academics */
-.rf-pill--academics,
-.category-menu li[data-category="Academics"].active {
-  background: #e8f1ff;
-  border-color: #bcd7ff;
-  color: #1e40af;
-}
-
-/* Events */
-.rf-pill--events,
-.category-menu li[data-category="Events"].active {
-  background: #fff7ed;
-  border-color: #fed7aa;
-  color: #9a3412;
-}
-
-/* Organizations */
-.rf-pill--organizations,
-.category-menu li[data-category="Organizations"].active {
-  background: #f3e8ff;
-  border-color: #d8b4fe;
-  color: #6b21a8;
-}
-
-/* Buy & Sell */
-.rf-pill--buy-sell,
-.category-menu li[data-category="Buy & Sell"].active {
-  background: #ffecfb;
-  border-color: #fca5ed;
-  color: #75155f;
-}
-
-/* General Questions */
-.rf-pill--general-questions,
-.category-menu li[data-category="General Questions"].active {
-  background: #fcfdf0;
-  border-color: #f7f6bb;
-  color: #646516;
-}
-
-/* Professor Reviews */
-.rf-pill--professor-reviews,
-.category-menu li[data-category="Professor Reviews"].active {
-  background: #fef2f2;
-  border-color: #fecaca;
-  color: #991b1b;
-}
-
-
-.rf-title {
-  margin: 8px 0 6px;
-  font-size: 20px;
-  line-height: 1.2;
-  color: #111827;
-  letter-spacing: -0.2px;
-}
-
-.rf-body {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.55;
-  color: rgba(17, 24, 39, 0.88);
-  white-space: pre-wrap;
-}
-
-.rf-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-.rf-tag {
-  background: var(--mint-light);
-  border: 1px solid #b5d6c1;
-  color: var(--primary-green);
-  font-weight: 900;
-
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 13px;
-  cursor: pointer;
-}
-.rf-tag:hover {
-  filter: brightness(0.98);
-}
-
-.rf-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(16, 24, 40, 0.08);
-}
-
-.rf-action {
-  border: 1px solid #e7efe9;
-  background: #fff;
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform 120ms cubic-bezier(.2, 1.25, .22, 1), background 120ms ease, border-color 120ms ease;
-}
-
-.rf-action:hover {
-  background: rgba(31, 112, 60, 0.12);
-  border-color: rgba(31, 112, 60, 0.35);
-  color: var(--primary-green);
-  transform: translateY(-1px);
-}
-.rf-action:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.rf-danger {
-  border-color: rgba(220, 38, 38, 0.25);
-  color: rgba(153, 27, 27, 0.95);
-}
-.rf-danger:hover {
-  background: #fff3f3;
-  border-color: #ffd4d4;
-}
-
-/* detail modal post styling */
-.rf-post--detail {
-  margin-bottom: 0;
-  box-shadow: none;
-  border-radius: 18px;
-}
-
-.rf-body--full {
-  margin-top: 10px;
-  white-space: pre-wrap;
-  line-height: 1.6;
-}
-
-.modal .rf-vote {
-  padding-top: 6px;
-}
-
-.detail-content {
-  padding: 10px 6px 0;
-}
-
-/* modal styles */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-
-  z-index: 1000;
-}
-.modal-overlay.open {
-  display: flex;
-}
-
-.modal {
-  width: min(640px, 100%);
-  background: white;
-  border-radius: 22px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
-  padding: 18px 18px 16px;
-  max-height: 86vh;
-  overflow: auto;
-}
-.modal-wide {
-  width: min(900px, 100%);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 6px 12px;
-
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 2;
-}
-
-.modal-title-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.modal-title-icon {
-  width: 22px;
-  height: 22px;
-  filter: brightness(0) saturate(100%) invert(27%) sepia(14%) saturate(950%)
-    hue-rotate(92deg) brightness(92%) contrast(92%);
-}
-
-.modal-close {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  border: 1px solid #eee;
-  background: white;
-  cursor: pointer;
-  font-size: 22px;
-  transition: transform 140ms cubic-bezier(.2, 1.25, .22, 1);
-}
-.modal-close:hover {
-  transform: rotate(2deg) scale(1.04);
-}
-.modal-close:active {
-  transform: scale(0.98);
-}
-
-.form-row {
-  margin: 12px 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.form-row label {
-  font-weight: 900;
-  color: #111;
-  font-size: 0.9rem;
-}
-.form-row input,
-.form-row select,
-.form-row textarea {
-  border: 1px solid #e8e8e8;
-  border-radius: 14px;
-  padding: 12px;
-  outline: none;
-  font-size: 0.95rem;
-  background: #fff;
-}
-.form-row textarea {
-  resize: vertical;
-}
-
-.help-text {
-  font-size: 0.8rem;
-  color: #8a8a8a;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin: 10px 6px 2px;
-}
-
-.detail-content {
-  padding: 2px 6px 10px;
-}
-
-.detail-subtitle {
-  margin: 14px 6px 8px;
-  font-size: 0.95rem;
-  font-weight: 900;
-  color: #111;
-}
-
-.detail-body {
-  margin-top: 10px;
-  white-space: pre-wrap;
-  line-height: 1.55;
-  color: #2b2b2b;
-}
-
-.detail-comments {
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  margin-top: 10px;
-  padding-top: 10px;
-}
-
-.comment-form {
-  margin: 8px 6px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.comment-form textarea {
-  border: 1px solid #e8e8e8;
-  border-radius: 14px;
-  padding: 12px;
-  outline: none;
-  font-size: 0.95rem;
-  resize: vertical;
-}
-
-.comment-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.comments-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 0 6px 10px;
-}
-
-.comment {
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
-  padding: 12px;
-  background: #fff;
-
-  transform-origin: top left;
-  animation: afCommentIn 360ms cubic-bezier(.2, 1.25, .22, 1);
-}
-@keyframes afCommentIn {
-  0%   { opacity: 0; transform: translateY(10px) scale(0.98); }
-  70%  { opacity: 1; transform: translateY(-2px) scale(1.01); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.comment-meta {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  color: var(--muted);
-  font-size: 0.82rem;
-  margin-bottom: 6px;
-}
-.comment-author {
-  color: #111;
-  font-weight: 900;
-}
-.comment-body {
-  white-space: pre-wrap;
-  line-height: 1.45;
-}
-
-/* accessibility helper class for screen-reader-only text */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
-/* animations */
-@keyframes af-rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-body.is-ready .layout-container > section > * {
-  animation: af-rise-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-body.is-ready .layout-container > section:nth-child(1) > * {
-  animation-delay: 80ms;
-}
-body.is-ready .layout-container > section:nth-child(2) > * {
-  animation-delay: 140ms;
-}
-body.is-ready .layout-container > section:nth-child(3) > * {
-  animation-delay: 200ms;
-}
-
-@keyframes af-post-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.rf-post.post-in {
-  animation: af-post-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes af-overlay-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes af-modal-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.modal-overlay.open {
-  animation: af-overlay-in 200ms ease both;
-}
-.modal-overlay.open .modal {
-  animation: af-modal-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body {
-    transition: none;
-  }
-  body.is-leaving {
-    opacity: 1;
-    transform: none;
+    const confirmBtn = overlay.querySelector('[data-af-action="confirm"]');
+    if (confirmBtn) confirmBtn.focus();
   }
 
-  body.is-ready .layout-container > section > * {
-    animation: none;
+  // data state
+  let posts = loadJSON(POSTS_KEY, []);
+  let votesByUser = loadJSON(VOTES_KEY, {});
+  votesByUser[email] = votesByUser[email] || {};
+
+  // Demo posts
+  if (posts.length === 0) {
+    posts = [
+      {
+        id: makeId("post"),
+        title: "What GE should I take?",
+        category: "Academics",
+        tags: ["frosh", "ge", "enlistment"],
+        body: "I'm planning my schedule for next term, Do any of you have GE recommendations? preferably something not too heavy. TYIA!",
+        authorName: "Chino Moreno",
+        authorEmail: "chino_moreno@dlsu.edu.ph",
+        createdAt: Date.now() - 1000 * 60 * 60 * 6,
+        score: 5,
+        comments: [],
+      },
+      {
+        id: makeId("post"),
+        title: "Best CCS orgs?",
+        category: "Organizations",
+        tags: ["orgs", "ccs", "freshman"],
+        body: "What CCS orgs would you guys recommend for me to join? DLSU ACM is on top of my list but I'm open to suggestions!",
+        authorName: "Gina Cole",
+        authorEmail: "gina_cole@dlsu.edu.ph",
+        createdAt: Date.now() - 1000 * 60 * 60 * 3,
+        score: 8,
+        comments: [],
+      },
+      {
+        id: makeId("post"),
+        title: "Selling Dubai Chewy Chocolate",
+        category: "Buy & Sell",
+        tags: ["books", "for-sale"],
+        body: "Selling my home-made dubai chewy choclate for Php 150/per. DM me if interested!",
+        authorName: "Alden Richards",
+        authorEmail: "alden_richards@dlsu.edu.ph",
+        createdAt: Date.now() - 1000 * 60 * 60,
+        score: 2,
+        comments: [],
+      },
+    ];
+    saveJSON(POSTS_KEY, posts);
   }
 
-  .rf-post.post-in,
-  .modal-overlay.open,
-  .modal-overlay.open .modal,
-  .comment {
-    animation: none;
+  // UI state
+  let activeCategory = "All";
+  let activeTag = null;
+  let searchQuery = "";
+  let sortMode = "newest";
+  let activePostId = null;
+
+  // Only animate feed on list changes
+  let shouldAnimateFeed = true;
+
+  // DOM elements
+  const categoryMenu = document.getElementById("categoryMenu");
+  const feed = document.getElementById("postsFeed");
+  const feedEmpty = document.getElementById("feedEmpty");
+  const feedTitle = document.getElementById("feedTitle");
+  const searchInput = document.getElementById("searchInput");
+
+  const openComposerBtn = document.getElementById("openComposerBtn");
+  const createFirstBtn = document.getElementById("createFirstBtn");
+  const quickPostTitle = document.getElementById("quickPostTitle");
+
+  // Composer modal
+  const composerOverlay = document.getElementById("composerOverlay");
+  const closeComposerBtn = document.getElementById("closeComposerBtn");
+  const cancelComposerBtn = document.getElementById("cancelComposerBtn");
+  const createPostForm = document.getElementById("createPostForm");
+
+  const postTitle = document.getElementById("postTitle");
+  const postCategory = document.getElementById("postCategory");
+  const postTags = document.getElementById("postTags");
+  const postBody = document.getElementById("postBody");
+  const titleCount = document.getElementById("titleCount");
+
+  // Tags
+  const allTagsChips = document.getElementById("allTagsChips");
+  const trendingTags = document.getElementById("trendingTags");
+  const noTagsText = document.getElementById("noTagsText");
+  const noTrendingText = document.getElementById("noTrendingText");
+
+  // Detail modal
+  const detailOverlay = document.getElementById("detailOverlay");
+  const closeDetailBtn = document.getElementById("closeDetailBtn");
+  const detailContent = document.getElementById("detailContent");
+  const commentForm = document.getElementById("commentForm");
+  const commentText = document.getElementById("commentText");
+  const commentsList = document.getElementById("commentsList");
+
+  // Sort dropdown
+  const sortDropdown = document.getElementById("sortDropdown");
+  const sortBtn = document.getElementById("sortBtn");
+  const sortMenu = document.getElementById("sortMenu");
+  const sortLabel = document.getElementById("sortLabel");
+
+  // Modal open/close helpers
+  function openOverlay(overlayEl) {
+    overlayEl.classList.add("open");
+    overlayEl.setAttribute("aria-hidden", "false");
   }
 
-  .rf-action,
-  .rf-vote-btn,
-  .comment-btn,
-  .btn-primary,
-  .btn-secondary,
-  .btn-create,
-  .modal-close,
-  .plus-btn {
-    transition: none;
+  function closeOverlay(overlayEl) {
+    overlayEl.classList.remove("open");
+    overlayEl.setAttribute("aria-hidden", "true");
   }
-}
 
-/* comments */
-.comment-actions-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
+  function openComposer(prefillTitle) {
+    createPostForm.reset();
+    titleCount.textContent = "0";
 
-.comment-btn {
-  border: 1px solid #e7efe9;
-  background: #fff;
-  border-radius: 999px;
-  padding: 7px 12px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: transform 120ms cubic-bezier(.2, 1.25, .22, 1), background 120ms ease, border-color 120ms ease;
-  font-size: 0.82rem;
-}
+    if (prefillTitle) {
+      postTitle.value = prefillTitle;
+      titleCount.textContent = String(prefillTitle.length);
+    }
 
-.comment-btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  background: #f4faf6;
-  border-color: rgba(16, 24, 40, 0.18);
-}
-.comment-btn:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.comment-btn--danger {
-  border-color: rgba(220, 38, 38, 0.25);
-  color: rgba(153, 27, 27, 0.95);
-}
-.comment-btn--danger:hover {
-  background: #fff3f3;
-  border-color: #ffd4d4;
-}
-
-.reply-form {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px dashed rgba(0, 0, 0, 0.08);
-}
-
-.reply-form textarea.reply-text {
-  width: 100%;
-  border: 1px solid #e8e8e8;
-  border-radius: 14px;
-  padding: 10px;
-  outline: none;
-  font-size: 0.95rem;
-  resize: vertical;
-}
-
-.reply-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-/* Thread indentation */
-.comment-replies {
-  margin-top: 12px;
-  margin-left: 16px;
-  padding-left: 14px;
-  border-left: 2px solid rgba(31, 112, 60, 0.18);
-}
-
-.comment--reply {
-  background: #fff;
-}
-
-
-.af-wiggle {
-  animation: afWiggle 280ms ease;
-}
-@keyframes afWiggle {
-  0%   { transform: translateX(0); }
-  25%  { transform: translateX(-3px); }
-  50%  { transform: translateX(3px); }
-  75%  { transform: translateX(-2px); }
-  100% { transform: translateX(0); }
-}
-
-/* Confirmation dialog styles */
-.af-confirm-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.42);
-
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  display: grid;
-  place-items: center;
-  padding: 18px;
-  z-index: 9999;
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 220ms ease;
-}
-
-.af-confirm-overlay.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.af-confirm-card {
-  width: min(440px, 100%);
-  background: #fff;
-  border-radius: 20px;
-
-  border: 1px solid rgba(16, 24, 40, 0.10);
-  box-shadow:
-    0 25px 80px rgba(0,0,0,0.26),
-    0 8px 20px rgba(0,0,0,0.10);
-
-  padding: 16px 16px 14px;
-
-  transform: translateY(18px) scale(0.86);
-  opacity: 0;
-
-  animation: afModalPop 520ms cubic-bezier(.2, 1.35, .22, 1) forwards;
-}
-
-@keyframes afModalPop {
-  0%   { transform: translateY(18px) scale(0.86); opacity: 0; }
-  60%  { transform: translateY(-6px) scale(1.04); opacity: 1; }
-  80%  { transform: translateY(2px)  scale(0.99); opacity: 1; }
-  100% { transform: translateY(0)    scale(1);    opacity: 1; }
-}
-
-.af-confirm-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.af-confirm-title {
-  font-size: 1.05rem;
-  margin: 0;
-  color: #111;
-}
-
-.af-confirm-x {
-  border: 0;
-  background: rgba(20, 54, 33, 0.06);
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-  padding: 8px 10px;
-  border-radius: 12px;
-  transition: transform 140ms ease, background 140ms ease;
-}
-
-.af-confirm-x:hover {
-  transform: rotate(4deg) scale(1.04);
-  background: rgba(20, 54, 33, 0.10);
-}
-
-.af-confirm-message {
-  margin: 0 0 12px;
-  color: rgba(16, 24, 40, 0.75);
-  font-size: 0.95rem;
-  line-height: 1.35;
-}
-
-.af-confirm-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.af-confirm-btn {
-  border: 1px solid rgba(16, 24, 40, 0.12);
-  background: #fff;
-  border-radius: 999px;
-  padding: 10px 15px;
-  font-weight: 900;
-  cursor: pointer;
-  font-size: 0.86rem;
-
-  transition:
-    transform 120ms cubic-bezier(.2, 1.35, .22, 1),
-    background 140ms ease,
-    border-color 140ms ease,
-    box-shadow 140ms ease;
-}
-
-.af-confirm-btn:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 10px 22px rgba(0,0,0,0.12);
-}
-
-.af-confirm-btn:active {
-  transform: translateY(0px) scale(0.98);
-}
-
-.af-confirm-btn--primary {
-  background: rgba(31, 112, 60, 0.12);
-  border-color: rgba(31, 112, 60, 0.18);
-  color: var(--primary-green);
-}
-
-.af-confirm-btn--primary:hover {
-  background: rgba(31, 112, 60, 0.18);
-}
-
-.af-confirm-btn--danger {
-  background: rgba(220, 38, 38, 0.12);
-  border-color: rgba(220, 38, 38, 0.20);
-  color: rgba(153, 27, 27, 0.95);
-}
-
-.af-confirm-btn--danger:hover {
-  background: rgba(220, 38, 38, 0.18);
-}
-
-/* reduce motion */
-@media (prefers-reduced-motion: reduce) {
-  .af-confirm-overlay,
-  .af-confirm-card,
-  .af-confirm-btn,
-  .af-confirm-x {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
+    openOverlay(composerOverlay);
+    postTitle.focus();
   }
-}
+
+  function closeComposer() {
+    closeOverlay(composerOverlay);
+  }
+
+  function openDetail(postId) {
+    activePostId = postId;
+    renderDetail();
+    openOverlay(detailOverlay);
+  }
+
+  function closeDetail() {
+    activePostId = null;
+    closeOverlay(detailOverlay);
+  }
+
+  // filtering & sorting
+  function applyFilters(list) {
+    let out = list.slice();
+
+    if (activeCategory && activeCategory !== "All") {
+      out = out.filter((p) => p.category === activeCategory);
+    }
+
+    if (activeTag) {
+      out = out.filter((p) => (p.tags || []).includes(activeTag));
+    }
+
+    const q = searchQuery.trim().toLowerCase();
+    if (q) {
+      out = out.filter((p) => {
+        const hay = [
+          p.title,
+          p.body,
+          p.category,
+          (p.tags || []).join(" "),
+          p.authorName,
+        ]
+          .join(" ")
+          .toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    if (sortMode === "newest") out.sort((a, b) => b.createdAt - a.createdAt);
+    if (sortMode === "oldest") out.sort((a, b) => a.createdAt - b.createdAt);
+    if (sortMode === "top") out.sort((a, b) => (b.score || 0) - (a.score || 0));
+
+    return out;
+  }
+
+  function updateFeedTitle() {
+    let title = "All Posts";
+    if (activeCategory !== "All") title = activeCategory;
+    if (activeTag) title += ` · #${activeTag}`;
+    if (feedTitle) feedTitle.textContent = title;
+  }
+
+  // voting
+  function getUserVote(postId) {
+    return (votesByUser[email] && votesByUser[email][postId]) || null;
+  }
+
+  function setUserVote(postId, voteValue) {
+    votesByUser[email][postId] = voteValue; // "up"|"down"|null
+    saveJSON(VOTES_KEY, votesByUser);
+  }
+
+  function vote(postId, direction) {
+    const idx = posts.findIndex((p) => p.id === postId);
+    if (idx < 0) return;
+
+    shouldAnimateFeed = false;
+
+    const current = getUserVote(postId);
+    let next = direction;
+    if (current === direction) next = null;
+
+    let delta = 0;
+    if (!current && next === "up") delta = +1;
+    if (!current && next === "down") delta = -1;
+    if (current === "up" && !next) delta = -1;
+    if (current === "down" && !next) delta = +1;
+    if (current === "up" && next === "down") delta = -2;
+    if (current === "down" && next === "up") delta = +2;
+
+    posts[idx].score = (posts[idx].score || 0) + delta;
+
+    setUserVote(postId, next);
+    saveJSON(POSTS_KEY, posts);
+
+    render();
+    if (activePostId === postId) renderDetail();
+  }
+
+  // categories / tags
+  function setActiveCategory(cat) {
+    activeCategory = cat;
+    activeTag = null;
+    shouldAnimateFeed = true;
+
+    if (categoryMenu) {
+      categoryMenu.querySelectorAll("li").forEach((li) => {
+        li.classList.toggle("active", li.dataset.category === cat);
+      });
+    }
+
+    render();
+  }
+
+  function setActiveTag(tag) {
+    activeTag = activeTag === tag ? null : tag;
+    shouldAnimateFeed = true;
+    render();
+  }
+
+  function isOwner(post) {
+    return post && post.authorEmail === email;
+  }
+
+  // comments helpers
+  function isCommentOwner(c) {
+    return (
+      (c && c.authorEmail === email) ||
+      (!c.authorEmail && c.authorName === name)
+    );
+  }
+
+  function ensureRepliesArray(c) {
+    if (!c.replies) c.replies = [];
+  }
+
+  function findCommentById(commentList, id) {
+    for (let i = 0; i < (commentList || []).length; i++) {
+      const c = commentList[i];
+      if (c.id === id) return c;
+      const found = findCommentById(c.replies || [], id);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  function deleteCommentById(commentList, id) {
+    if (!commentList) return false;
+
+    for (let i = 0; i < commentList.length; i++) {
+      const c = commentList[i];
+      if (c.id === id) {
+        commentList.splice(i, 1);
+        return true;
+      }
+      const deletedInReplies = deleteCommentById(c.replies || [], id);
+      if (deletedInReplies) return true;
+    }
+    return false;
+  }
+
+  function addReplyToComment(post, parentCommentId, replyObj) {
+    if (!post) return false;
+    post.comments = post.comments || [];
+    const parent = findCommentById(post.comments, parentCommentId);
+    if (!parent) return false;
+
+    ensureRepliesArray(parent);
+    parent.replies.push(replyObj);
+    return true;
+  }
+
+  // tags rendering
+  function renderTagAreas(allPosts) {
+    if (!allTagsChips || !trendingTags || !noTagsText || !noTrendingText) return;
+
+    const usageCounts = new Map();
+    const upvoteCountsByPost = new Map();
+
+    Object.keys(votesByUser || {}).forEach((userEmail) => {
+      const perUser = votesByUser[userEmail];
+      if (!perUser) return;
+
+      Object.keys(perUser).forEach((postId) => {
+        if (perUser[postId] === "up") {
+          upvoteCountsByPost.set(
+            postId,
+            (upvoteCountsByPost.get(postId) || 0) + 1,
+          );
+        }
+      });
+    });
+
+    const popularityByTag = new Map();
+
+    allPosts.forEach((p) => {
+      const tags = p.tags || [];
+      const postUpvotes = upvoteCountsByPost.get(p.id) || 0;
+
+      tags.forEach((t) => {
+        usageCounts.set(t, (usageCounts.get(t) || 0) + 1);
+        popularityByTag.set(t, (popularityByTag.get(t) || 0) + postUpvotes);
+      });
+    });
+
+    const tagsSorted = Array.from(usageCounts.entries())
+      .sort((a, b) => (b[1] !== a[1] ? b[1] - a[1] : a[0].localeCompare(b[0])))
+      .map(([tag]) => tag);
+
+    allTagsChips.innerHTML = "";
+    if (tagsSorted.length === 0) {
+      noTagsText.style.display = "block";
+      allTagsChips.appendChild(noTagsText);
+    } else {
+      noTagsText.style.display = "none";
+      tagsSorted.slice(0, 12).forEach((t) => {
+        const btn = document.createElement("button");
+        btn.className = "chip tag-chip";
+        btn.type = "button";
+        btn.dataset.tag = t;
+        btn.textContent = "#" + t;
+        allTagsChips.appendChild(btn);
+      });
+    }
+
+    const trendingSorted = Array.from(usageCounts.keys())
+      .map((tag) => ({
+        tag,
+        popularity: popularityByTag.get(tag) || 0,
+        usage: usageCounts.get(tag) || 0,
+      }))
+      .sort((a, b) => {
+        if (b.popularity !== a.popularity) return b.popularity - a.popularity;
+        if (b.usage !== a.usage) return b.usage - a.usage;
+        return a.tag.localeCompare(b.tag);
+      })
+      .map((x) => x.tag);
+
+    trendingTags.innerHTML = "";
+    if (trendingSorted.length === 0) {
+      noTrendingText.style.display = "block";
+      trendingTags.appendChild(noTrendingText);
+    } else {
+      noTrendingText.style.display = "none";
+      trendingSorted.slice(0, 6).forEach((t) => {
+        const btn = document.createElement("button");
+        btn.className = "chip tag-chip";
+        btn.type = "button";
+        btn.dataset.tag = t;
+        btn.textContent = "#" + t;
+        trendingTags.appendChild(btn);
+      });
+    }
+  }
+
+  // post rendering
+  function renderPostCard(p) {
+    const previewLen = 220;
+    const preview =
+      p.body.length > previewLen ? p.body.slice(0, previewLen) + "…" : p.body;
+
+    const userVote = getUserVote(p.id);
+    const upActive = userVote === "up" ? "active" : "";
+    const downActive = userVote === "down" ? "active" : "";
+
+    const tags = p.tags || [];
+    const tagsHtml = tags.length
+      ? `<div class="rf-tags">${tags
+          .map(
+            (t) =>
+              `<button class="rf-tag tag-chip" type="button" data-tag="${escapeHtml(
+                t,
+              )}">#${escapeHtml(t)}</button>`,
+          )
+          .join("")}</div>`
+      : "";
+
+    return `
+      <article class="rf-post" data-id="${escapeHtml(p.id)}">
+        <aside class="rf-vote">
+          <button class="rf-vote-btn ${upActive}" type="button" data-action="upvote" aria-label="Upvote">▲</button>
+          <div class="rf-score" title="Score">${p.score || 0}</div>
+          <button class="rf-vote-btn ${downActive}" type="button" data-action="downvote" aria-label="Downvote">▼</button>
+        </aside>
+
+        <div class="rf-main">
+          <div class="rf-meta">
+            <span class="rf-pill rf-pill--${categorySlug(p.category)}">
+              ${escapeHtml(p.category)}
+            </span>
+            <span class="rf-meta-sep">•</span>
+            <span class="rf-author">${escapeHtml(p.authorName)}</span>
+            <span class="rf-meta-sep">•</span>
+            <time class="rf-time">${escapeHtml(formatDate(p.createdAt))}</time>
+          </div>
+
+          <h4 class="rf-title">${escapeHtml(p.title)}</h4>
+          <p class="rf-body">${escapeHtml(preview)}</p>
+
+          ${tagsHtml}
+
+          <div class="rf-actions">
+            ${
+              isOwner(p)
+                ? `<button class="rf-action rf-danger" type="button" data-action="delete">Delete</button>`
+                : ``
+            }
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function animatePostsIn() {
+    const cards = feed ? feed.querySelectorAll(".rf-post") : [];
+    cards.forEach((card, i) => {
+      card.classList.remove("post-in");
+      window.setTimeout(() => {
+        card.classList.add("post-in");
+      }, 40 + i * 30);
+    });
+  }
+
+  function handleDelete(postId) {
+    const idx = posts.findIndex((p) => p.id === postId);
+    if (idx < 0) return;
+    if (!isOwner(posts[idx])) return;
+
+    showConfirmModal(
+      {
+        title: "Delete this post?",
+        message: "This will permanently remove your post.",
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        danger: true,
+      },
+      () => {
+        posts.splice(idx, 1);
+        saveJSON(POSTS_KEY, posts);
+
+        Object.keys(votesByUser).forEach((userEmail) => {
+          if (
+            votesByUser[userEmail] &&
+            votesByUser[userEmail][postId] !== undefined
+          ) {
+            delete votesByUser[userEmail][postId];
+          }
+        });
+        saveJSON(VOTES_KEY, votesByUser);
+
+        if (activePostId === postId) closeDetail();
+        shouldAnimateFeed = true;
+        render();
+      },
+    );
+  }
+
+  function render() {
+    updateFeedTitle();
+    const filtered = applyFilters(posts);
+
+    if (!feed || !feedEmpty) return;
+
+    if (filtered.length === 0) {
+      feedEmpty.style.display = "block";
+      feed.innerHTML = "";
+    } else {
+      feedEmpty.style.display = "none";
+      feed.innerHTML = filtered.map(renderPostCard).join("");
+      if (shouldAnimateFeed) {
+        animatePostsIn();
+        shouldAnimateFeed = false;
+      }
+    }
+
+    renderTagAreas(posts);
+  }
+
+  // detail rendering
+  function getPostById(id) {
+    return posts.find((p) => p.id === id) || null;
+  }
+
+  function renderComments() {
+    const p = getPostById(activePostId);
+    if (!p || !commentsList) return;
+
+    p.comments = p.comments || [];
+    commentsList.innerHTML = "";
+
+    if (p.comments.length === 0) {
+      commentsList.innerHTML = `<p class="placeholder-text">No comments yet.</p>`;
+      return;
+    }
+
+    function renderCommentNode(c, depth) {
+      ensureRepliesArray(c);
+
+      const canDelete = isCommentOwner(c);
+      const indentClass = depth > 0 ? "comment comment--reply" : "comment";
+
+      const repliesHtml = (c.replies || [])
+        .map((r) => renderCommentNode(r, depth + 1))
+        .join("");
+
+      return `
+        <div class="${indentClass}" data-comment-id="${escapeHtml(c.id)}">
+          <div class="comment-meta">
+            <span class="comment-author">${escapeHtml(c.authorName)}</span>
+            <span>${escapeHtml(formatDate(c.createdAt))}</span>
+          </div>
+
+          <div class="comment-body">${escapeHtml(c.body)}</div>
+
+          <div class="comment-actions-row">
+            <button class="comment-btn" type="button" data-action="reply">Reply</button>
+            ${
+              canDelete
+                ? `<button class="comment-btn comment-btn--danger" type="button" data-action="delete-comment">Delete</button>`
+                : ``
+            }
+          </div>
+
+          <div class="reply-form" hidden>
+            <textarea class="reply-text" rows="2" placeholder="Write a reply..."></textarea>
+            <div class="reply-actions">
+              <button class="comment-btn" type="button" data-action="submit-reply">Reply</button>
+              <button class="comment-btn" type="button" data-action="cancel-reply">Cancel</button>
+            </div>
+          </div>
+
+          ${repliesHtml ? `<div class="comment-replies">${repliesHtml}</div>` : ``}
+        </div>
+      `;
+    }
+
+    commentsList.innerHTML = p.comments.map((c) => renderCommentNode(c, 0)).join("");
+  }
+
+  function renderDetail() {
+    const p = getPostById(activePostId);
+    if (!detailContent) return;
+
+    if (!p) {
+      detailContent.innerHTML = `<p class="placeholder-text">Post not found.</p>`;
+      if (commentsList) commentsList.innerHTML = "";
+      return;
+    }
+
+    const userVote = getUserVote(p.id);
+    const upActive = userVote === "up" ? "active" : "";
+    const downActive = userVote === "down" ? "active" : "";
+
+    const tags = p.tags || [];
+    const tagsHtml = tags.length
+      ? `<div class="rf-tags">
+          ${tags
+            .map(
+              (t) =>
+                `<button class="rf-tag tag-chip" type="button" data-tag="${escapeHtml(
+                  t,
+                )}">#${escapeHtml(t)}</button>`,
+            )
+            .join("")}
+        </div>`
+      : "";
+
+    detailContent.innerHTML = `
+      <article class="rf-post rf-post--detail" data-id="${escapeHtml(p.id)}">
+        <aside class="rf-vote">
+          <button class="rf-vote-btn ${upActive}" type="button" id="detailUpBtn" aria-label="Upvote">▲</button>
+          <div class="rf-score" title="Score">${p.score || 0}</div>
+          <button class="rf-vote-btn ${downActive}" type="button" id="detailDownBtn" aria-label="Downvote">▼</button>
+        </aside>
+
+        <div class="rf-main">
+          <div class="rf-meta">
+            <span class="rf-pill rf-pill--${categorySlug(p.category)}">
+              ${escapeHtml(p.category)}
+            </span>
+            <span class="rf-meta-sep">•</span>
+            <span class="rf-author">${escapeHtml(p.authorName)}</span>
+            <span class="rf-meta-sep">•</span>
+            <time class="rf-time">${escapeHtml(formatDate(p.createdAt))}</time>
+          </div>
+
+          <h4 class="rf-title">${escapeHtml(p.title)}</h4>
+          <div class="rf-body rf-body--full">${escapeHtml(p.body)}</div>
+
+          ${tagsHtml}
+        </div>
+      </article>
+    `;
+
+    const detailUpBtn = document.getElementById("detailUpBtn");
+    const detailDownBtn = document.getElementById("detailDownBtn");
+    if (detailUpBtn) detailUpBtn.addEventListener("click", () => vote(p.id, "up"));
+    if (detailDownBtn) detailDownBtn.addEventListener("click", () => vote(p.id, "down"));
+
+    detailContent.querySelectorAll(".tag-chip").forEach((btn) => {
+      btn.addEventListener("click", () => setActiveTag(btn.dataset.tag || null));
+    });
+
+    renderComments();
+  }
+
+  // create post
+  function createPostFromForm() {
+    const title = postTitle ? postTitle.value.trim() : "";
+    const category = postCategory ? postCategory.value : "General";
+    const tags = normalizeTags(postTags ? postTags.value : "");
+    const body = postBody ? postBody.value.trim() : "";
+    if (!title || !body) return;
+
+    const post = {
+      id: makeId("post"),
+      title,
+      category,
+      tags,
+      body,
+      authorName: name,
+      authorEmail: email,
+      createdAt: Date.now(),
+      score: 0,
+      comments: [],
+    };
+
+    posts.unshift(post);
+    saveJSON(POSTS_KEY, posts);
+    shouldAnimateFeed = true;
+
+    closeComposer();
+    render();
+  }
+
+  // event listeners
+  if (categoryMenu) {
+    categoryMenu.querySelectorAll("li").forEach((li) => {
+      li.addEventListener("click", () => setActiveCategory(li.dataset.category));
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      searchQuery = searchInput.value;
+      shouldAnimateFeed = true;
+      render();
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const val = searchInput.value.trim();
+        if (val) {
+          saveToHistory(val);
+          // Force the dropdown to hide after saving
+          searchHistoryEl.classList.remove("show");
+          // Optionally blur the input to hide keyboard on mobile
+          searchInput.blur(); 
+        }
+      }
+    });
+  }
+
+  // Sort dropdown
+  function closeSortMenu() {
+    if (!sortDropdown || !sortBtn) return;
+    sortDropdown.classList.remove("open");
+    sortBtn.setAttribute("aria-expanded", "false");
+  }
+
+  if (sortBtn && sortMenu && sortDropdown) {
+    sortBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = sortDropdown.classList.toggle("open");
+      sortBtn.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    sortMenu.addEventListener("click", (e) => e.stopPropagation());
+    document.addEventListener("click", () => closeSortMenu());
+
+    sortMenu.querySelectorAll(".dropdown-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        sortMenu.querySelectorAll(".dropdown-item").forEach((i) => i.classList.remove("selected"));
+        item.classList.add("selected");
+
+        sortMode = item.dataset.value;
+        if (sortLabel) sortLabel.textContent = item.textContent;
+
+        closeSortMenu();
+        shouldAnimateFeed = true;
+        render();
+      });
+    });
+  }
+
+  // Composer open/close
+  if (openComposerBtn) {
+    openComposerBtn.addEventListener("click", () =>
+      openComposer(quickPostTitle ? quickPostTitle.value.trim() : ""),
+    );
+  }
+
+  if (quickPostTitle) {
+    quickPostTitle.addEventListener("click", () => {
+      const currentText = quickPostTitle.value.trim();
+      openComposer(currentText);
+      
+      // Optional: clear the bar after opening so it's fresh when you come back
+      quickPostTitle.value = ""; 
+    });
+  }
+  
+  if (createFirstBtn) createFirstBtn.addEventListener("click", () => openComposer(""));
+
+  if (closeComposerBtn) closeComposerBtn.addEventListener("click", closeComposer);
+  if (cancelComposerBtn) cancelComposerBtn.addEventListener("click", closeComposer);
+  if (composerOverlay) {
+    composerOverlay.addEventListener("click", (e) => {
+      if (e.target === composerOverlay) closeComposer();
+    });
+  }
+
+  if (createPostForm) {
+    createPostForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      createPostFromForm();
+    });
+  }
+
+  if (postTitle && titleCount) {
+    postTitle.addEventListener("input", () => {
+      titleCount.textContent = String(postTitle.value.length);
+    });
+  }
+
+  // Detail close
+  if (closeDetailBtn) closeDetailBtn.addEventListener("click", closeDetail);
+  if (detailOverlay) {
+    detailOverlay.addEventListener("click", (e) => {
+      if (e.target === detailOverlay) closeDetail();
+    });
+  }
+
+  // Comment submit
+  if (commentForm) {
+    commentForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!commentText) return;
+
+      const text = commentText.value.trim();
+      if (!text) return;
+
+      const p = getPostById(activePostId);
+      if (!p) return;
+
+      shouldAnimateFeed = false;
+
+      p.comments = p.comments || [];
+      p.comments.push({
+        id: makeId("c"),
+        authorName: name,
+        authorEmail: email,
+        body: text,
+        createdAt: Date.now(),
+        replies: [],
+      });
+
+      saveJSON(POSTS_KEY, posts);
+      commentText.value = "";
+      renderComments();
+      render();
+    });
+  }
+
+  // comments actions
+  if (commentsList) {
+    commentsList.addEventListener("click", (e) => {
+      const actionEl = e.target.closest("[data-action]");
+      const commentEl = e.target.closest("[data-comment-id]");
+      if (!actionEl || !commentEl) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const action = actionEl.getAttribute("data-action");
+      const commentId = commentEl.getAttribute("data-comment-id");
+
+      const p = getPostById(activePostId);
+      if (!p) return;
+
+      shouldAnimateFeed = false;
+
+      if (action === "reply") {
+        const form = commentEl.querySelector(".reply-form");
+        if (!form) return;
+
+        if (form.hasAttribute("hidden")) {
+          form.removeAttribute("hidden");
+          const ta = form.querySelector(".reply-text");
+          if (ta) ta.focus();
+        } else {
+          form.setAttribute("hidden", "");
+        }
+        return;
+      }
+
+      if (action === "cancel-reply") {
+        const form = commentEl.querySelector(".reply-form");
+        if (!form) return;
+
+        const ta = form.querySelector(".reply-text");
+        if (ta) ta.value = "";
+        form.setAttribute("hidden", "");
+        return;
+      }
+
+      if (action === "submit-reply") {
+        const form = commentEl.querySelector(".reply-form");
+        if (!form) return;
+
+        const ta = form.querySelector(".reply-text");
+        const text = (ta ? ta.value : "").trim();
+        if (!text) return;
+
+        const replyObj = {
+          id: makeId("r"),
+          authorName: name,
+          authorEmail: email,
+          body: text,
+          createdAt: Date.now(),
+          replies: [],
+        };
+
+        const ok = addReplyToComment(p, commentId, replyObj);
+        if (!ok) return;
+
+        saveJSON(POSTS_KEY, posts);
+
+        if (ta) ta.value = "";
+        form.setAttribute("hidden", "");
+
+        renderComments();
+        render();
+        return;
+      }
+
+      if (action === "delete-comment") {
+        const target = findCommentById(p.comments || [], commentId);
+        if (!target || !isCommentOwner(target)) return;
+
+        showConfirmModal(
+          {
+            title: "Delete comment?",
+            message: "This will permanently remove your comment and its replies.",
+            confirmText: "Delete",
+            cancelText: "Cancel",
+            danger: true,
+          },
+          () => {
+            const deleted = deleteCommentById(p.comments || [], commentId);
+            if (!deleted) return;
+
+            saveJSON(POSTS_KEY, posts);
+            renderComments();
+            render();
+          },
+        );
+        return;
+      }
+    });
+  }
+
+  // Feed actions
+  if (feed) {
+    feed.addEventListener("click", (e) => {
+      const card = e.target.closest(".rf-post");
+      if (!card) return;
+
+      const postId = card.getAttribute("data-id");
+
+      // tag clicks
+      const tagBtn = e.target.closest("[data-tag]");
+      if (tagBtn && tagBtn.dataset.tag) {
+        setActiveTag(tagBtn.dataset.tag);
+        return;
+      }
+
+      // vote/delete clicks
+      const actionBtn = e.target.closest("[data-action]");
+      if (actionBtn) {
+        const action = actionBtn.getAttribute("data-action");
+        if (action === "upvote") vote(postId, "up");
+        if (action === "downvote") vote(postId, "down");
+        if (action === "delete") handleDelete(postId);
+        return;
+      }
+
+      openDetail(postId);
+    });
+  }
+
+  // Sidebar tags
+  document.addEventListener("click", (e) => {
+    const chip = e.target.closest(".tag-chip");
+    if (!chip || !chip.dataset.tag) return;
+
+    const inTagAreas =
+      chip.closest("#allTagsChips") ||
+      chip.closest("#trendingTags") ||
+      chip.closest("#detailContent");
+
+    if (!inTagAreas) return;
+    setActiveTag(chip.dataset.tag);
+  });
+
+  // search history
+  const HISTORY_KEY = "af_search_history";
+  const searchHistoryEl = document.getElementById("searchHistory");
+
+  function getHistory() {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  }
+
+  function saveToHistory(term) {
+    if (!term.trim()) return;
+    let history = getHistory();
+    // Remove if exists to move it to top
+    history = history.filter(item => item !== term);
+    history.unshift(term);
+    // Keep only last 5
+    history = history.slice(0, 5);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function removeFromHistory(term) {
+    let history = getHistory();
+    history = history.filter(item => item !== term);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const history = getHistory();
+    if (history.length === 0) {
+      searchHistoryEl.classList.remove("show");
+      return;
+    }
+
+    searchHistoryEl.innerHTML = `<div class="history-header">Recent Searches</div>`;
+    
+    history.forEach(term => {
+      const item = document.createElement("div");
+      item.className = "history-item";
+      item.innerHTML = `
+        <span class="history-text">${escapeHtml(term)}</span>
+        <span class="delete-history" data-term="${escapeHtml(term)}">×</span>
+      `;
+      item.addEventListener("click", (e) => {
+        // If the user clicked the 'X', don't trigger a search
+        if (e.target.classList.contains("delete-history")) {
+          e.stopPropagation();
+          removeFromHistory(term);
+          return;
+        }
+        searchInput.value = term;
+        searchQuery = term; 
+        shouldAnimateFeed = true;
+        saveToHistory(term);
+        searchHistoryEl.classList.remove("show");
+        render();
+      });
+
+      searchHistoryEl.appendChild(item);
+    });
+  }
+
+  // Input Events
+  if (searchInput) {
+    searchInput.addEventListener("focus", () => {
+      renderHistory();
+      if (getHistory().length > 0) searchHistoryEl.classList.add("show");
+    });
+
+    // Save history when pressing Enter
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        saveToHistory(searchInput.value);
+        searchHistoryEl.classList.remove("show");
+      }
+    });
+
+    // Close history when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".search-wrapper")) {
+        searchHistoryEl.classList.remove("show");
+      }
+    });
+  }
+
+  // Initial
+  render();
+})();
