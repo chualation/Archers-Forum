@@ -96,6 +96,14 @@
       .slice(0, 8);
   }
 
+  // NEW: category slug helper
+  function categorySlug(cat) {
+    return String(cat || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
+
   // confirmation modals
   function showConfirmModal(
     { title, message, confirmText, cancelText, danger },
@@ -182,36 +190,36 @@
     posts = [
       {
         id: makeId("post"),
-        title: "What’s the best GE course to take?",
+        title: "What GE should I take?",
         category: "Academics",
         tags: ["frosh", "ge", "enlistment"],
-        body: "I’m planning my enlistment next term. Any GE courses that are interesting but not too heavy?",
-        authorName: "ArcherAdmin",
-        authorEmail: "admin@archersforum.dev",
+        body: "I'm planning my schedule for next term, Do any of you have GE recommendations? preferably something not too heavy. TYIA!",
+        authorName: "Chino Moreno",
+        authorEmail: "chino_moreno@dlsu.edu.ph",
         createdAt: Date.now() - 1000 * 60 * 60 * 6,
         score: 5,
         comments: [],
       },
       {
         id: makeId("post"),
-        title: "Thoughts on CCS orgs to join?",
+        title: "Best CCS orgs?",
         category: "Organizations",
         tags: ["orgs", "ccs", "freshman"],
-        body: "There are so many CCS orgs 😭 Which ones are beginner-friendly and active?",
-        authorName: "ArcherAdmin",
-        authorEmail: "admin@archersforum.dev",
+        body: "What CCS orgs would you guys recommend for me to join? DLSU ACM is on top of my list but I'm open to suggestions!",
+        authorName: "Gina Cole",
+        authorEmail: "gina_cole@dlsu.edu.ph",
         createdAt: Date.now() - 1000 * 60 * 60 * 3,
         score: 8,
         comments: [],
       },
       {
         id: makeId("post"),
-        title: "Selling used calculus textbook",
+        title: "Selling Dubai Chewy Chocolate",
         category: "Buy & Sell",
         tags: ["books", "for-sale"],
-        body: "Selling my calculus textbook in good condition. DM if interested!",
-        authorName: "ArcherAdmin",
-        authorEmail: "admin@archersforum.dev",
+        body: "Selling my home-made dubai chewy choclate for Php 150/per. DM me if interested!",
+        authorName: "Alden Richards",
+        authorEmail: "alden_richards@dlsu.edu.ph",
         createdAt: Date.now() - 1000 * 60 * 60,
         score: 2,
         comments: [],
@@ -267,7 +275,7 @@
   const commentText = document.getElementById("commentText");
   const commentsList = document.getElementById("commentsList");
 
-  // Sort dropdown (FIXED)
+  // Sort dropdown
   const sortDropdown = document.getElementById("sortDropdown");
   const sortBtn = document.getElementById("sortBtn");
   const sortMenu = document.getElementById("sortMenu");
@@ -368,7 +376,6 @@
     const idx = posts.findIndex((p) => p.id === postId);
     if (idx < 0) return;
 
-    // no feed animation on vote
     shouldAnimateFeed = false;
 
     const current = getUserVote(postId);
@@ -417,9 +424,8 @@
     return post && post.authorEmail === email;
   }
 
-  /// comments
+  // comments helpers
   function isCommentOwner(c) {
-    // fallback for older comments
     return (
       (c && c.authorEmail === email) ||
       (!c.authorEmail && c.authorName === name)
@@ -468,8 +474,7 @@
 
   // tags rendering
   function renderTagAreas(allPosts) {
-    if (!allTagsChips || !trendingTags || !noTagsText || !noTrendingText)
-      return;
+    if (!allTagsChips || !trendingTags || !noTagsText || !noTrendingText) return;
 
     const usageCounts = new Map();
     const upvoteCountsByPost = new Map();
@@ -500,7 +505,6 @@
       });
     });
 
-    // Trending tags (by upvote count, then usage, then alphabetically)
     const tagsSorted = Array.from(usageCounts.entries())
       .sort((a, b) => (b[1] !== a[1] ? b[1] - a[1] : a[0].localeCompare(b[0])))
       .map(([tag]) => tag);
@@ -583,7 +587,9 @@
 
         <div class="rf-main">
           <div class="rf-meta">
-            <span class="rf-pill">${escapeHtml(p.category)}</span>
+            <span class="rf-pill rf-pill--${categorySlug(p.category)}">
+              ${escapeHtml(p.category)}
+            </span>
             <span class="rf-meta-sep">•</span>
             <span class="rf-author">${escapeHtml(p.authorName)}</span>
             <span class="rf-meta-sep">•</span>
@@ -596,7 +602,6 @@
           ${tagsHtml}
 
           <div class="rf-actions">
-            <button class="rf-action" type="button" data-action="view">View</button>
             ${
               isOwner(p)
                 ? `<button class="rf-action rf-danger" type="button" data-action="delete">Delete</button>`
@@ -612,12 +617,9 @@
     const cards = feed ? feed.querySelectorAll(".rf-post") : [];
     cards.forEach((card, i) => {
       card.classList.remove("post-in");
-      window.setTimeout(
-        () => {
-          card.classList.add("post-in");
-        },
-        40 + i * 30,
-      );
+      window.setTimeout(() => {
+        card.classList.add("post-in");
+      }, 40 + i * 30);
     });
   }
 
@@ -625,24 +627,34 @@
     const idx = posts.findIndex((p) => p.id === postId);
     if (idx < 0) return;
     if (!isOwner(posts[idx])) return;
-    if (!confirm("Delete this post?")) return;
 
-    posts.splice(idx, 1);
-    saveJSON(POSTS_KEY, posts);
+    showConfirmModal(
+      {
+        title: "Delete this post?",
+        message: "This will permanently remove your post.",
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        danger: true,
+      },
+      () => {
+        posts.splice(idx, 1);
+        saveJSON(POSTS_KEY, posts);
 
-    Object.keys(votesByUser).forEach((userEmail) => {
-      if (
-        votesByUser[userEmail] &&
-        votesByUser[userEmail][postId] !== undefined
-      ) {
-        delete votesByUser[userEmail][postId];
-      }
-    });
-    saveJSON(VOTES_KEY, votesByUser);
+        Object.keys(votesByUser).forEach((userEmail) => {
+          if (
+            votesByUser[userEmail] &&
+            votesByUser[userEmail][postId] !== undefined
+          ) {
+            delete votesByUser[userEmail][postId];
+          }
+        });
+        saveJSON(VOTES_KEY, votesByUser);
 
-    if (activePostId === postId) closeDetail();
-    shouldAnimateFeed = true;
-    render();
+        if (activePostId === postId) closeDetail();
+        shouldAnimateFeed = true;
+        render();
+      },
+    );
   }
 
   function render() {
@@ -724,9 +736,7 @@
       `;
     }
 
-    commentsList.innerHTML = p.comments
-      .map((c) => renderCommentNode(c, 0))
-      .join("");
+    commentsList.innerHTML = p.comments.map((c) => renderCommentNode(c, 0)).join("");
   }
 
   function renderDetail() {
@@ -767,7 +777,9 @@
 
         <div class="rf-main">
           <div class="rf-meta">
-            <span class="rf-pill">${escapeHtml(p.category)}</span>
+            <span class="rf-pill rf-pill--${categorySlug(p.category)}">
+              ${escapeHtml(p.category)}
+            </span>
             <span class="rf-meta-sep">•</span>
             <span class="rf-author">${escapeHtml(p.authorName)}</span>
             <span class="rf-meta-sep">•</span>
@@ -784,15 +796,11 @@
 
     const detailUpBtn = document.getElementById("detailUpBtn");
     const detailDownBtn = document.getElementById("detailDownBtn");
-    if (detailUpBtn)
-      detailUpBtn.addEventListener("click", () => vote(p.id, "up"));
-    if (detailDownBtn)
-      detailDownBtn.addEventListener("click", () => vote(p.id, "down"));
+    if (detailUpBtn) detailUpBtn.addEventListener("click", () => vote(p.id, "up"));
+    if (detailDownBtn) detailDownBtn.addEventListener("click", () => vote(p.id, "down"));
 
     detailContent.querySelectorAll(".tag-chip").forEach((btn) => {
-      btn.addEventListener("click", () =>
-        setActiveTag(btn.dataset.tag || null),
-      );
+      btn.addEventListener("click", () => setActiveTag(btn.dataset.tag || null));
     });
 
     renderComments();
@@ -830,9 +838,7 @@
   // event listeners
   if (categoryMenu) {
     categoryMenu.querySelectorAll("li").forEach((li) => {
-      li.addEventListener("click", () =>
-        setActiveCategory(li.dataset.category),
-      );
+      li.addEventListener("click", () => setActiveCategory(li.dataset.category));
     });
   }
 
@@ -844,7 +850,7 @@
     });
   }
 
-  // Sort dropdown 
+  // Sort dropdown
   function closeSortMenu() {
     if (!sortDropdown || !sortBtn) return;
     sortDropdown.classList.remove("open");
@@ -858,17 +864,12 @@
       sortBtn.setAttribute("aria-expanded", String(isOpen));
     });
 
-    sortMenu.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-
+    sortMenu.addEventListener("click", (e) => e.stopPropagation());
     document.addEventListener("click", () => closeSortMenu());
 
     sortMenu.querySelectorAll(".dropdown-item").forEach((item) => {
       item.addEventListener("click", () => {
-        sortMenu
-          .querySelectorAll(".dropdown-item")
-          .forEach((i) => i.classList.remove("selected"));
+        sortMenu.querySelectorAll(".dropdown-item").forEach((i) => i.classList.remove("selected"));
         item.classList.add("selected");
 
         sortMode = item.dataset.value;
@@ -887,13 +888,10 @@
       openComposer(quickPostTitle ? quickPostTitle.value.trim() : ""),
     );
   }
-  if (createFirstBtn)
-    createFirstBtn.addEventListener("click", () => openComposer(""));
+  if (createFirstBtn) createFirstBtn.addEventListener("click", () => openComposer(""));
 
-  if (closeComposerBtn)
-    closeComposerBtn.addEventListener("click", closeComposer);
-  if (cancelComposerBtn)
-    cancelComposerBtn.addEventListener("click", closeComposer);
+  if (closeComposerBtn) closeComposerBtn.addEventListener("click", closeComposer);
+  if (cancelComposerBtn) cancelComposerBtn.addEventListener("click", closeComposer);
   if (composerOverlay) {
     composerOverlay.addEventListener("click", (e) => {
       if (e.target === composerOverlay) closeComposer();
@@ -1031,8 +1029,7 @@
         showConfirmModal(
           {
             title: "Delete comment?",
-            message:
-              "This will permanently remove your comment and its replies.",
+            message: "This will permanently remove your comment and its replies.",
             confirmText: "Delete",
             cancelText: "Cancel",
             danger: true,
@@ -1046,37 +1043,41 @@
             render();
           },
         );
-
         return;
       }
     });
   }
 
-  // Feed actions 
+  // Feed actions
   if (feed) {
     feed.addEventListener("click", (e) => {
-      const actionBtn = e.target.closest("[data-action]");
-      const tagBtn = e.target.closest("[data-tag]");
       const card = e.target.closest(".rf-post");
+      if (!card) return;
 
+      const postId = card.getAttribute("data-id");
+
+      // tag clicks
+      const tagBtn = e.target.closest("[data-tag]");
       if (tagBtn && tagBtn.dataset.tag) {
         setActiveTag(tagBtn.dataset.tag);
         return;
       }
 
-      if (!actionBtn || !card) return;
+      // vote/delete clicks
+      const actionBtn = e.target.closest("[data-action]");
+      if (actionBtn) {
+        const action = actionBtn.getAttribute("data-action");
+        if (action === "upvote") vote(postId, "up");
+        if (action === "downvote") vote(postId, "down");
+        if (action === "delete") handleDelete(postId);
+        return;
+      }
 
-      const postId = card.getAttribute("data-id");
-      const action = actionBtn.getAttribute("data-action");
-
-      if (action === "upvote") vote(postId, "up");
-      if (action === "downvote") vote(postId, "down");
-      if (action === "view") openDetail(postId);
-      if (action === "delete") handleDelete(postId);
+      openDetail(postId);
     });
   }
 
-  // Sidebar tags 
+  // Sidebar tags
   document.addEventListener("click", (e) => {
     const chip = e.target.closest(".tag-chip");
     if (!chip || !chip.dataset.tag) return;
