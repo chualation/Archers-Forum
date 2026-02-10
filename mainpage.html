@@ -12,12 +12,15 @@
   <!-- Header -->
   <header class="main-header">
     <div class="header-left">
-      <img class="nav-logo" src="assets/logo_2.png" alt="Archer's Forum Logo" />
+      <a href="mainpage.html" id="logoLink" class="logo-link">
+        <img class="nav-logo" src="assets/logo_2.png" alt="Archer's Forum Logo" />
+      </a>
     </div>
 
     <div class="header-center">
       <div class="search-wrapper">
-        <input id="searchInput" type="text" placeholder="Search posts, tags, or categories..." />
+        <input id="searchInput" type="text" placeholder="Search posts, tags, or categories..." autocomplete="off"/>
+        <div id="searchHistory" class="search-history-dropdown"></div>
       </div>
     </div>
 
