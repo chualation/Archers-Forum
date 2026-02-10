@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // page transition animation 
+  // page transition animation
   document.body.classList.add("is-ready");
 
   const links = document.querySelectorAll(".auth-toggle a[href$='.html']");

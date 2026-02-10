@@ -1,5 +1,5 @@
 const AF_STORAGE = {
-  VERSION: "v3", 
+  VERSION: "v3",
 
   KEYS: {
     POSTS: "af_posts_v4",

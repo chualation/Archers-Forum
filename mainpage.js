@@ -7,8 +7,11 @@
     return;
   }
 
-  // smooth fade-in on page load
   document.body.classList.add("is-ready");
+
+  const POSTS_KEY = AF_STORAGE.KEYS.POSTS;
+  const VOTES_KEY = AF_STORAGE.KEYS.VOTES;
+  const HISTORY_KEY = "af_search_history";
 
   function navigateWithFade(href) {
     document.body.classList.add("is-leaving");
@@ -16,45 +19,6 @@
       window.location.href = href;
     }, 260);
   }
-
-  // smooth page transitions for profile link
-  const profileLink = document.getElementById("profileLink");
-  if (profileLink) {
-    profileLink.addEventListener("click", (e) => {
-      const href = profileLink.getAttribute("href");
-      if (!href) return;
-      e.preventDefault();
-      navigateWithFade(href);
-    });
-  }
-
-  // smooth page transition for the logo link
-  const logoLink = document.getElementById("logoLink");
-  if (logoLink) {
-    logoLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      navigateWithFade("mainpage.html");
-    });
-  }
-
-  // Set name in header
-  const nameEl = document.querySelector(".user-name");
-  if (nameEl) nameEl.textContent = name;
-
-  // Logout
-  const logoutBtn = document.querySelector(".btn-logout");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("af_user");
-      localStorage.removeItem("af_user_email");
-      localStorage.removeItem("af_user_password");
-      navigateWithFade("login.html");
-    });
-  }
-
-  // Storage helpers
-  const POSTS_KEY = AF_STORAGE.KEYS.POSTS;
-  const VOTES_KEY = AF_STORAGE.KEYS.VOTES;
 
   function loadJSON(key, fallback) {
     return AF_STORAGE.load(key, fallback);
@@ -64,7 +28,6 @@
     AF_STORAGE.save(key, value);
   }
 
-  // utilities
   function makeId(prefix) {
     return (
       (prefix || "id") +
@@ -105,7 +68,6 @@
       .slice(0, 8);
   }
 
-  // NEW: category slug helper
   function categorySlug(cat) {
     return String(cat || "")
       .toLowerCase()
@@ -113,7 +75,6 @@
       .replace(/(^-|-$)/g, "");
   }
 
-  // confirmation modals
   function showConfirmModal(
     { title, message, confirmText, cancelText, danger },
     onConfirm,
@@ -153,14 +114,14 @@
       </div>
     `;
 
+    function onKey(e) {
+      if (e.key === "Escape") close();
+    }
+
     function close() {
       overlay.classList.remove("open");
       window.setTimeout(() => overlay.remove(), 140);
       document.removeEventListener("keydown", onKey);
-    }
-
-    function onKey(e) {
-      if (e.key === "Escape") close();
     }
 
     document.addEventListener("keydown", onKey);
@@ -182,19 +143,172 @@
       });
 
     document.body.appendChild(overlay);
-
     window.setTimeout(() => overlay.classList.add("open"), 0);
 
     const confirmBtn = overlay.querySelector('[data-af-action="confirm"]');
     if (confirmBtn) confirmBtn.focus();
   }
 
-  // data state
+  function getHistory() {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  }
+
+  function renderHistory() {
+    if (!searchHistoryEl) return;
+
+    const history = getHistory();
+    if (history.length === 0) {
+      searchHistoryEl.classList.remove("show");
+      searchHistoryEl.innerHTML = "";
+      return;
+    }
+
+    searchHistoryEl.innerHTML = `
+      <div class="history-header">
+        <span>Recent Searches</span>
+        <button class="clear-history-btn" id="clearHistoryBtn">Clear all</button>
+      </div>
+    `;
+
+    history.forEach((term) => {
+      const item = document.createElement("div");
+      item.className = "history-item";
+      item.innerHTML = `
+        <span class="history-text">${escapeHtml(term)}</span>
+        <span class="delete-history" data-term="${escapeHtml(term)}">×</span>
+      `;
+
+      item.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-history")) {
+          e.stopPropagation();
+          removeFromHistory(term);
+          return;
+        }
+
+        if (searchInput) searchInput.value = term;
+        searchQuery = term;
+        shouldAnimateFeed = true;
+        saveToHistory(term);
+        searchHistoryEl.classList.remove("show");
+        render();
+      });
+
+      searchHistoryEl.appendChild(item);
+    });
+
+    const clearBtn = document.getElementById("clearHistoryBtn");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        clearAllHistory();
+      });
+    }
+  }
+
+  function saveToHistory(term) {
+    const t = String(term || "").trim();
+    if (!t) return;
+
+    let history = getHistory();
+    history = history.filter((item) => item !== t);
+    history.unshift(t);
+    history = history.slice(0, 5);
+
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function removeFromHistory(term) {
+    let history = getHistory();
+    history = history.filter((item) => item !== term);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function clearAllHistory() {
+    localStorage.removeItem(HISTORY_KEY);
+    if (searchHistoryEl) {
+      searchHistoryEl.classList.remove("show");
+      searchHistoryEl.innerHTML = "";
+    }
+  }
+
+  const profileLink = document.getElementById("profileLink");
+  const logoLink = document.getElementById("logoLink");
+  const nameEl = document.querySelector(".user-name");
+  const logoutBtn = document.querySelector(".btn-logout");
+
+  const categoryMenu = document.getElementById("categoryMenu");
+  const feed = document.getElementById("postsFeed");
+  const feedEmpty = document.getElementById("feedEmpty");
+  const feedTitle = document.getElementById("feedTitle");
+  const searchInput = document.getElementById("searchInput");
+
+  const openComposerBtn = document.getElementById("openComposerBtn");
+  const createFirstBtn = document.getElementById("createFirstBtn");
+  const quickPostTitle = document.getElementById("quickPostTitle");
+
+  const composerOverlay = document.getElementById("composerOverlay");
+  const closeComposerBtn = document.getElementById("closeComposerBtn");
+  const cancelComposerBtn = document.getElementById("cancelComposerBtn");
+  const createPostForm = document.getElementById("createPostForm");
+
+  const postTitle = document.getElementById("postTitle");
+  const postCategory = document.getElementById("postCategory");
+  const postTags = document.getElementById("postTags");
+  const postBody = document.getElementById("postBody");
+  const titleCount = document.getElementById("titleCount");
+
+  const allTagsChips = document.getElementById("allTagsChips");
+  const trendingTags = document.getElementById("trendingTags");
+  const noTagsText = document.getElementById("noTagsText");
+  const noTrendingText = document.getElementById("noTrendingText");
+
+  const detailOverlay = document.getElementById("detailOverlay");
+  const closeDetailBtn = document.getElementById("closeDetailBtn");
+  const detailContent = document.getElementById("detailContent");
+  const commentForm = document.getElementById("commentForm");
+  const commentText = document.getElementById("commentText");
+  const commentsList = document.getElementById("commentsList");
+
+  const sortDropdown = document.getElementById("sortDropdown");
+  const sortBtn = document.getElementById("sortBtn");
+  const sortMenu = document.getElementById("sortMenu");
+  const sortLabel = document.getElementById("sortLabel");
+
+  const searchHistoryEl = document.getElementById("searchHistory");
+
+  if (profileLink) {
+    profileLink.addEventListener("click", (e) => {
+      const href = profileLink.getAttribute("href");
+      if (!href) return;
+      e.preventDefault();
+      navigateWithFade(href);
+    });
+  }
+
+  if (logoLink) {
+    logoLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      navigateWithFade("mainpage.html");
+    });
+  }
+
+  if (nameEl) nameEl.textContent = name;
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("af_user");
+      localStorage.removeItem("af_user_email");
+      localStorage.removeItem("af_user_password");
+      navigateWithFade("login.html");
+    });
+  }
+
   let posts = loadJSON(POSTS_KEY, []);
   let votesByUser = loadJSON(VOTES_KEY, {});
   votesByUser[email] = votesByUser[email] || {};
 
-  // Demo posts
   if (posts.length === 0) {
     posts = [
       {
@@ -237,60 +351,13 @@
     saveJSON(POSTS_KEY, posts);
   }
 
-  // UI state
   let activeCategory = "All";
   let activeTag = null;
   let searchQuery = "";
   let sortMode = "newest";
   let activePostId = null;
-
-  // Only animate feed on list changes
   let shouldAnimateFeed = true;
 
-  // DOM elements
-  const categoryMenu = document.getElementById("categoryMenu");
-  const feed = document.getElementById("postsFeed");
-  const feedEmpty = document.getElementById("feedEmpty");
-  const feedTitle = document.getElementById("feedTitle");
-  const searchInput = document.getElementById("searchInput");
-
-  const openComposerBtn = document.getElementById("openComposerBtn");
-  const createFirstBtn = document.getElementById("createFirstBtn");
-  const quickPostTitle = document.getElementById("quickPostTitle");
-
-  // Composer modal
-  const composerOverlay = document.getElementById("composerOverlay");
-  const closeComposerBtn = document.getElementById("closeComposerBtn");
-  const cancelComposerBtn = document.getElementById("cancelComposerBtn");
-  const createPostForm = document.getElementById("createPostForm");
-
-  const postTitle = document.getElementById("postTitle");
-  const postCategory = document.getElementById("postCategory");
-  const postTags = document.getElementById("postTags");
-  const postBody = document.getElementById("postBody");
-  const titleCount = document.getElementById("titleCount");
-
-  // Tags
-  const allTagsChips = document.getElementById("allTagsChips");
-  const trendingTags = document.getElementById("trendingTags");
-  const noTagsText = document.getElementById("noTagsText");
-  const noTrendingText = document.getElementById("noTrendingText");
-
-  // Detail modal
-  const detailOverlay = document.getElementById("detailOverlay");
-  const closeDetailBtn = document.getElementById("closeDetailBtn");
-  const detailContent = document.getElementById("detailContent");
-  const commentForm = document.getElementById("commentForm");
-  const commentText = document.getElementById("commentText");
-  const commentsList = document.getElementById("commentsList");
-
-  // Sort dropdown
-  const sortDropdown = document.getElementById("sortDropdown");
-  const sortBtn = document.getElementById("sortBtn");
-  const sortMenu = document.getElementById("sortMenu");
-  const sortLabel = document.getElementById("sortLabel");
-
-  // Modal open/close helpers
   function openOverlay(overlayEl) {
     overlayEl.classList.add("open");
     overlayEl.setAttribute("aria-hidden", "false");
@@ -302,34 +369,35 @@
   }
 
   function openComposer(prefillTitle) {
-    createPostForm.reset();
-    titleCount.textContent = "0";
+    if (!createPostForm) return;
 
-    if (prefillTitle) {
+    createPostForm.reset();
+    if (titleCount) titleCount.textContent = "0";
+
+    if (prefillTitle && postTitle && titleCount) {
       postTitle.value = prefillTitle;
       titleCount.textContent = String(prefillTitle.length);
     }
 
-    openOverlay(composerOverlay);
-    postTitle.focus();
+    if (composerOverlay) openOverlay(composerOverlay);
+    if (postTitle) postTitle.focus();
   }
 
   function closeComposer() {
-    closeOverlay(composerOverlay);
+    if (composerOverlay) closeOverlay(composerOverlay);
   }
 
   function openDetail(postId) {
     activePostId = postId;
     renderDetail();
-    openOverlay(detailOverlay);
+    if (detailOverlay) openOverlay(detailOverlay);
   }
 
   function closeDetail() {
     activePostId = null;
-    closeOverlay(detailOverlay);
+    if (detailOverlay) closeOverlay(detailOverlay);
   }
 
-  // filtering & sorting
   function applyFilters(list) {
     let out = list.slice();
 
@@ -359,7 +427,8 @@
 
     if (sortMode === "newest") out.sort((a, b) => b.createdAt - a.createdAt);
     if (sortMode === "oldest") out.sort((a, b) => a.createdAt - b.createdAt);
-    if (sortMode === "top") out.sort((a, b) => (b.score || 0) - (a.score || 0));
+    if (sortMode === "top")
+      out.sort((a, b) => (b.score || 0) - (a.score || 0));
 
     return out;
   }
@@ -371,13 +440,12 @@
     if (feedTitle) feedTitle.textContent = title;
   }
 
-  // voting
   function getUserVote(postId) {
     return (votesByUser[email] && votesByUser[email][postId]) || null;
   }
 
   function setUserVote(postId, voteValue) {
-    votesByUser[email][postId] = voteValue; // "up"|"down"|null
+    votesByUser[email][postId] = voteValue;
     saveJSON(VOTES_KEY, votesByUser);
   }
 
@@ -408,7 +476,6 @@
     if (activePostId === postId) renderDetail();
   }
 
-  // categories / tags
   function setActiveCategory(cat) {
     activeCategory = cat;
     activeTag = null;
@@ -433,7 +500,6 @@
     return post && post.authorEmail === email;
   }
 
-  // comments helpers
   function isCommentOwner(c) {
     return (
       (c && c.authorEmail === email) ||
@@ -481,7 +547,6 @@
     return true;
   }
 
-  // tags rendering
   function renderTagAreas(allPosts) {
     if (!allTagsChips || !trendingTags || !noTagsText || !noTrendingText) return;
 
@@ -564,7 +629,6 @@
     }
   }
 
-  // post rendering
   function renderPostCard(p) {
     const previewLen = 220;
     const preview =
@@ -626,9 +690,12 @@
     const cards = feed ? feed.querySelectorAll(".rf-post") : [];
     cards.forEach((card, i) => {
       card.classList.remove("post-in");
-      window.setTimeout(() => {
-        card.classList.add("post-in");
-      }, 40 + i * 30);
+      window.setTimeout(
+        () => {
+          card.classList.add("post-in");
+        },
+        40 + i * 30,
+      );
     });
   }
 
@@ -687,7 +754,6 @@
     renderTagAreas(posts);
   }
 
-  // detail rendering
   function getPostById(id) {
     return posts.find((p) => p.id === id) || null;
   }
@@ -745,7 +811,9 @@
       `;
     }
 
-    commentsList.innerHTML = p.comments.map((c) => renderCommentNode(c, 0)).join("");
+    commentsList.innerHTML = p.comments
+      .map((c) => renderCommentNode(c, 0))
+      .join("");
   }
 
   function renderDetail() {
@@ -805,8 +873,10 @@
 
     const detailUpBtn = document.getElementById("detailUpBtn");
     const detailDownBtn = document.getElementById("detailDownBtn");
+
     if (detailUpBtn) detailUpBtn.addEventListener("click", () => vote(p.id, "up"));
-    if (detailDownBtn) detailDownBtn.addEventListener("click", () => vote(p.id, "down"));
+    if (detailDownBtn)
+      detailDownBtn.addEventListener("click", () => vote(p.id, "down"));
 
     detailContent.querySelectorAll(".tag-chip").forEach((btn) => {
       btn.addEventListener("click", () => setActiveTag(btn.dataset.tag || null));
@@ -815,7 +885,6 @@
     renderComments();
   }
 
-  // create post
   function createPostFromForm() {
     const title = postTitle ? postTitle.value.trim() : "";
     const category = postCategory ? postCategory.value : "General";
@@ -844,41 +913,16 @@
     render();
   }
 
-  // event listeners
-  if (categoryMenu) {
-    categoryMenu.querySelectorAll("li").forEach((li) => {
-      li.addEventListener("click", () => setActiveCategory(li.dataset.category));
-    });
-  }
-
-  if (searchInput) {
-    searchInput.addEventListener("input", () => {
-      searchQuery = searchInput.value;
-      shouldAnimateFeed = true;
-      render();
-    });
-  }
-
-  if (searchInput) {
-    searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const val = searchInput.value.trim();
-        if (val) {
-          saveToHistory(val);
-          // Force the dropdown to hide after saving
-          searchHistoryEl.classList.remove("show");
-          // Optionally blur the input to hide keyboard on mobile
-          searchInput.blur(); 
-        }
-      }
-    });
-  }
-
-  // Sort dropdown
   function closeSortMenu() {
     if (!sortDropdown || !sortBtn) return;
     sortDropdown.classList.remove("open");
     sortBtn.setAttribute("aria-expanded", "false");
+  }
+
+  if (categoryMenu) {
+    categoryMenu.querySelectorAll("li").forEach((li) => {
+      li.addEventListener("click", () => setActiveCategory(li.dataset.category));
+    });
   }
 
   if (sortBtn && sortMenu && sortDropdown) {
@@ -893,7 +937,9 @@
 
     sortMenu.querySelectorAll(".dropdown-item").forEach((item) => {
       item.addEventListener("click", () => {
-        sortMenu.querySelectorAll(".dropdown-item").forEach((i) => i.classList.remove("selected"));
+        sortMenu
+          .querySelectorAll(".dropdown-item")
+          .forEach((i) => i.classList.remove("selected"));
         item.classList.add("selected");
 
         sortMode = item.dataset.value;
@@ -906,7 +952,6 @@
     });
   }
 
-  // Composer open/close
   if (openComposerBtn) {
     openComposerBtn.addEventListener("click", () =>
       openComposer(quickPostTitle ? quickPostTitle.value.trim() : ""),
@@ -917,16 +962,18 @@
     quickPostTitle.addEventListener("click", () => {
       const currentText = quickPostTitle.value.trim();
       openComposer(currentText);
-      
-      // Optional: clear the bar after opening so it's fresh when you come back
-      quickPostTitle.value = ""; 
+      quickPostTitle.value = "";
     });
   }
-  
-  if (createFirstBtn) createFirstBtn.addEventListener("click", () => openComposer(""));
+
+  if (createFirstBtn) {
+    createFirstBtn.addEventListener("click", () => openComposer(""));
+  }
 
   if (closeComposerBtn) closeComposerBtn.addEventListener("click", closeComposer);
-  if (cancelComposerBtn) cancelComposerBtn.addEventListener("click", closeComposer);
+  if (cancelComposerBtn)
+    cancelComposerBtn.addEventListener("click", closeComposer);
+
   if (composerOverlay) {
     composerOverlay.addEventListener("click", (e) => {
       if (e.target === composerOverlay) closeComposer();
@@ -946,15 +993,14 @@
     });
   }
 
-  // Detail close
   if (closeDetailBtn) closeDetailBtn.addEventListener("click", closeDetail);
+
   if (detailOverlay) {
     detailOverlay.addEventListener("click", (e) => {
       if (e.target === detailOverlay) closeDetail();
     });
   }
 
-  // Comment submit
   if (commentForm) {
     commentForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -985,7 +1031,6 @@
     });
   }
 
-  // comments actions
   if (commentsList) {
     commentsList.addEventListener("click", (e) => {
       const actionEl = e.target.closest("[data-action]");
@@ -1078,12 +1123,10 @@
             render();
           },
         );
-        return;
       }
     });
   }
 
-  // Feed actions
   if (feed) {
     feed.addEventListener("click", (e) => {
       const card = e.target.closest(".rf-post");
@@ -1091,14 +1134,12 @@
 
       const postId = card.getAttribute("data-id");
 
-      // tag clicks
       const tagBtn = e.target.closest("[data-tag]");
       if (tagBtn && tagBtn.dataset.tag) {
         setActiveTag(tagBtn.dataset.tag);
         return;
       }
 
-      // vote/delete clicks
       const actionBtn = e.target.closest("[data-action]");
       if (actionBtn) {
         const action = actionBtn.getAttribute("data-action");
@@ -1112,7 +1153,6 @@
     });
   }
 
-  // Sidebar tags
   document.addEventListener("click", (e) => {
     const chip = e.target.closest(".tag-chip");
     if (!chip || !chip.dataset.tag) return;
@@ -1126,91 +1166,53 @@
     setActiveTag(chip.dataset.tag);
   });
 
-  // search history
-  const HISTORY_KEY = "af_search_history";
-  const searchHistoryEl = document.getElementById("searchHistory");
+  document.querySelectorAll(".collapse-head").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetId = btn.getAttribute("data-collapse-target");
+      const body = document.getElementById(targetId);
+      if (!body) return;
 
-  function getHistory() {
-    return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-  }
-
-  function saveToHistory(term) {
-    if (!term.trim()) return;
-    let history = getHistory();
-    // Remove if exists to move it to top
-    history = history.filter(item => item !== term);
-    history.unshift(term);
-    // Keep only last 5
-    history = history.slice(0, 5);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    renderHistory();
-  }
-
-  function removeFromHistory(term) {
-    let history = getHistory();
-    history = history.filter(item => item !== term);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    renderHistory();
-  }
-
-  function renderHistory() {
-    const history = getHistory();
-    if (history.length === 0) {
-      searchHistoryEl.classList.remove("show");
-      return;
-    }
-
-    searchHistoryEl.innerHTML = `<div class="history-header">Recent Searches</div>`;
-    
-    history.forEach(term => {
-      const item = document.createElement("div");
-      item.className = "history-item";
-      item.innerHTML = `
-        <span class="history-text">${escapeHtml(term)}</span>
-        <span class="delete-history" data-term="${escapeHtml(term)}">×</span>
-      `;
-      item.addEventListener("click", (e) => {
-        // If the user clicked the 'X', don't trigger a search
-        if (e.target.classList.contains("delete-history")) {
-          e.stopPropagation();
-          removeFromHistory(term);
-          return;
-        }
-        searchInput.value = term;
-        searchQuery = term; 
-        shouldAnimateFeed = true;
-        saveToHistory(term);
-        searchHistoryEl.classList.remove("show");
-        render();
-      });
-
-      searchHistoryEl.appendChild(item);
+      const isOpen = body.classList.contains("open");
+      if (isOpen) {
+        body.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+      } else {
+        body.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+      }
     });
-  }
+  });
 
-  // Input Events
   if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      searchQuery = searchInput.value;
+      shouldAnimateFeed = true;
+      render();
+    });
+
     searchInput.addEventListener("focus", () => {
       renderHistory();
-      if (getHistory().length > 0) searchHistoryEl.classList.add("show");
-    });
-
-    // Save history when pressing Enter
-    searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        saveToHistory(searchInput.value);
-        searchHistoryEl.classList.remove("show");
+      if (getHistory().length > 0 && searchHistoryEl) {
+        searchHistoryEl.classList.add("show");
       }
     });
 
-    // Close history when clicking outside
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+
+      const val = searchInput.value.trim();
+      if (val) saveToHistory(val);
+
+      if (searchHistoryEl) searchHistoryEl.classList.remove("show");
+      searchInput.blur();
+    });
+
     document.addEventListener("click", (e) => {
-      if (!e.target.closest(".search-wrapper")) {
+      if (!e.target.closest(".search-wrapper") && searchHistoryEl) {
         searchHistoryEl.classList.remove("show");
       }
     });
   }
 
-  // Initial
   render();
 })();

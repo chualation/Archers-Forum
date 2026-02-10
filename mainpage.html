@@ -5,6 +5,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Archer's Forum | Main Page</title>
+
+  <!-- Google Font: Inter (clean + readable for content pages) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="main_page.css" />
 </head>
 
@@ -19,7 +28,7 @@
 
     <div class="header-center">
       <div class="search-wrapper">
-        <input id="searchInput" type="text" placeholder="Search posts, tags, or categories..." autocomplete="off"/>
+        <input id="searchInput" type="text" placeholder="Search posts, tags, or categories..." autocomplete="off" />
         <div id="searchHistory" class="search-history-dropdown"></div>
       </div>
     </div>
@@ -33,30 +42,39 @@
     </div>
   </header>
 
-
   <!-- 3-Column Layout -->
   <main class="layout-container">
     <!-- Left Column -->
     <section>
-      <div class="content-card">
-        <!-- Categories-->
-        <h3>Categories</h3>
-        <ul class="category-menu" id="categoryMenu">
-          <li class="active" data-category="All">All</li>
-          <li data-category="Academics">Academics</li>
-          <li data-category="Events">Events</li>
-          <li data-category="Organizations">Organizations</li>
-          <li data-category="Buy &amp; Sell">Buy &amp; Sell</li>
-          <li data-category="General Questions">General Questions</li>
-          <li data-category="Professor Reviews">Professor Reviews</li>
-        </ul>
-      </div>
+      <div class="content-card collapsible-card">
+        <button class="collapse-head" type="button" data-collapse-target="categoriesBody" aria-expanded="true">
+          <h3>Categories</h3>
+          <span class="collapse-caret">▾</span>
+        </button>
 
-      <div class="content-card">
-        <!-- Tags-->
-        <h3>Tags</h3>
-        <div class="chips-wrap" id="allTagsChips">
-          <p class="placeholder-text" id="noTagsText">No tags yet</p>
+        <div class="collapse-body open" id="categoriesBody">
+          <ul class="category-menu" id="categoryMenu">
+            <li class="active" data-category="All">All</li>
+            <li data-category="Academics">Academics</li>
+            <li data-category="Events">Events</li>
+            <li data-category="Organizations">Organizations</li>
+            <li data-category="Buy &amp; Sell">Buy &amp; Sell</li>
+            <li data-category="General Questions">General Questions</li>
+            <li data-category="Professor Reviews">Professor Reviews</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="content-card collapsible-card">
+        <button class="collapse-head" type="button" data-collapse-target="tagsBody" aria-expanded="true">
+          <h3>Tags</h3>
+          <span class="collapse-caret">▾</span>
+        </button>
+
+        <div class="collapse-body open" id="tagsBody">
+          <div class="chips-wrap" id="allTagsChips">
+            <p class="placeholder-text" id="noTagsText">No tags yet</p>
+          </div>
         </div>
       </div>
     </section>
@@ -115,7 +133,7 @@
         <!-- Community Rules-->
         <h3>Community Rules</h3>
         <ol>
-          <li>Follow Archtiquette.</li>
+          <li>Follow <a href="https://www.dlsu.edu.ph/wp-content/uploads/pdf/osa/student-handbook.pdf" target="_blank" rel="noopener noreferrer">Archtiquette</a>.</li>
           <li>Be respectful &amp; civil to all.</li>
           <li>No doxxing, harassment, or hate speech.</li>
           <li>Use category and tags correctly to avoid confusion.</li>
