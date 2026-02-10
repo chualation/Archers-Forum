@@ -99,7 +99,7 @@ body.is-leaving {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 130px;
+  margin-left: 50px;
 }
 
 .search-wrapper {
@@ -320,11 +320,10 @@ body.is-leaving {
   align-items: center;
   margin-bottom: 15px;
 
-  /* needed for dropdown layering */
   position: relative;
-  z-index: 200;
   overflow: visible;
 }
+
 
 .posts-feed {
   display: flex;
@@ -606,11 +605,8 @@ body.is-leaving {
   color: var(--primary-green);
 }
 
-/* =========================
-   Category Colors (Global)
-========================= */
+/* category colors*/
 
-/* ALL (sidebar only) */
 .category-menu li[data-category="All"].active {
   background: #e5f5ec;
   border-color: #bfe3cf;
