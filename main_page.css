@@ -356,6 +356,7 @@ body.is-leaving {
   padding: 12px;
   border-radius: 10px;
   outline: none;
+  cursor: pointer; 
 }
 
 .plus-btn {
