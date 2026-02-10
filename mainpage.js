@@ -28,6 +28,15 @@
     });
   }
 
+  // smooth page transition for the logo link
+  const logoLink = document.getElementById("logoLink");
+  if (logoLink) {
+    logoLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      navigateWithFade("mainpage.html");
+    });
+  }
+
   // Set name in header
   const nameEl = document.querySelector(".user-name");
   if (nameEl) nameEl.textContent = name;
@@ -850,6 +859,21 @@
     });
   }
 
+  if (searchInput) {
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const val = searchInput.value.trim();
+        if (val) {
+          saveToHistory(val);
+          // Force the dropdown to hide after saving
+          searchHistoryEl.classList.remove("show");
+          // Optionally blur the input to hide keyboard on mobile
+          searchInput.blur(); 
+        }
+      }
+    });
+  }
+
   // Sort dropdown
   function closeSortMenu() {
     if (!sortDropdown || !sortBtn) return;
@@ -1090,6 +1114,91 @@
     if (!inTagAreas) return;
     setActiveTag(chip.dataset.tag);
   });
+
+  // search history
+  const HISTORY_KEY = "af_search_history";
+  const searchHistoryEl = document.getElementById("searchHistory");
+
+  function getHistory() {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+  }
+
+  function saveToHistory(term) {
+    if (!term.trim()) return;
+    let history = getHistory();
+    // Remove if exists to move it to top
+    history = history.filter(item => item !== term);
+    history.unshift(term);
+    // Keep only last 5
+    history = history.slice(0, 5);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function removeFromHistory(term) {
+    let history = getHistory();
+    history = history.filter(item => item !== term);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const history = getHistory();
+    if (history.length === 0) {
+      searchHistoryEl.classList.remove("show");
+      return;
+    }
+
+    searchHistoryEl.innerHTML = `<div class="history-header">Recent Searches</div>`;
+    
+    history.forEach(term => {
+      const item = document.createElement("div");
+      item.className = "history-item";
+      item.innerHTML = `
+        <span class="history-text">${escapeHtml(term)}</span>
+        <span class="delete-history" data-term="${escapeHtml(term)}">×</span>
+      `;
+      item.addEventListener("click", (e) => {
+        // If the user clicked the 'X', don't trigger a search
+        if (e.target.classList.contains("delete-history")) {
+          e.stopPropagation();
+          removeFromHistory(term);
+          return;
+        }
+        searchInput.value = term;
+        searchQuery = term; 
+        shouldAnimateFeed = true;
+        saveToHistory(term);
+        searchHistoryEl.classList.remove("show");
+        render();
+      });
+
+      searchHistoryEl.appendChild(item);
+    });
+  }
+
+  // Input Events
+  if (searchInput) {
+    searchInput.addEventListener("focus", () => {
+      renderHistory();
+      if (getHistory().length > 0) searchHistoryEl.classList.add("show");
+    });
+
+    // Save history when pressing Enter
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        saveToHistory(searchInput.value);
+        searchHistoryEl.classList.remove("show");
+      }
+    });
+
+    // Close history when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".search-wrapper")) {
+        searchHistoryEl.classList.remove("show");
+      }
+    });
+  }
 
   // Initial
   render();
