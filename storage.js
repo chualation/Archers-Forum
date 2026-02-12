@@ -1,9 +1,9 @@
 const AF_STORAGE = {
-  VERSION: "v3",
+  VERSION: "v7",
 
   KEYS: {
-    POSTS: "af_posts_v4",
-    VOTES: "af_votes_v4",
+    POSTS: "af_posts_v7",
+    VOTES: "af_votes_v7",
   },
 
   load(key, fallback) {

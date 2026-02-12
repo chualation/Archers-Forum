@@ -13,6 +13,18 @@
   const VOTES_KEY = AF_STORAGE.KEYS.VOTES;
   const HISTORY_KEY = "af_search_history";
 
+  function hydrateHeaderUser() {
+  const headerName = localStorage.getItem("af_user") || "User";
+  const avatar = localStorage.getItem("af_profile_avatar"); 
+
+  const nameNode = document.getElementById("headerUserName") || document.querySelector(".user-name");
+  if (nameNode) nameNode.textContent = headerName;
+
+  const avatarNode = document.getElementById("headerAvatar") || document.querySelector(".user-avatar-img");
+  if (avatarNode) avatarNode.src = avatar ? avatar : "assets/default_pfp.png";
+}
+
+hydrateHeaderUser();
   function navigateWithFade(href) {
     document.body.classList.add("is-leaving");
     window.setTimeout(() => {
@@ -337,14 +349,26 @@
       },
       {
         id: makeId("post"),
-        title: "Selling Dubai Chewy Chocolate",
+        title: "Selling Dubai Chewy Cookie",
         category: "Buy & Sell",
-        tags: ["books", "for-sale"],
-        body: "Selling my home-made dubai chewy choclate for Php 150/per. DM me if interested!",
+        tags: ["cookies", "for-sale"],
+        body: "Selling my home-made dubai chewy cookie for Php 150/per. DM me if interested!",
         authorName: "Alden Richards",
         authorEmail: "alden_richards@dlsu.edu.ph",
         createdAt: Date.now() - 1000 * 60 * 60,
         score: 2,
+        comments: [],
+      },
+      {
+        id: makeId("post"),
+        title: "Prof Review: Oliver Berris ",
+        category: "Academics",
+        tags: ["professor", "review"],
+        body: "Has anyone taken Sir. Berris? How was your experience?",
+        authorName: "Molly Vouge",
+        authorEmail: "molly_vouge@dlsu.edu.ph",
+        createdAt: Date.now() - 1000 * 60 * 40 *2,
+        score: 10,
         comments: [],
       },
     ];
@@ -629,6 +653,45 @@
     }
   }
 
+  function countAllReplies(commentList) {
+      let total = 0;
+
+      (commentList || []).forEach((c) => {
+        total += 1;
+
+        // count nested replies
+        if (c.replies && c.replies.length > 0) {
+          total += countAllReplies(c.replies);
+        }
+      });
+
+      return total;
+    }
+
+    function getPostReplyCount(post) {
+      if (!post || !post.comments) return 0;
+      return countAllReplies(post.comments);
+    }
+
+
+    function countAllReplies(commentList) {
+    let total = 0;
+
+    (commentList || []).forEach((c) => {
+      total += 1; // count this comment
+      if (c.replies && c.replies.length > 0) {
+        total += countAllReplies(c.replies);
+      }
+    });
+
+    return total;
+  }
+
+  function getPostReplyCount(post) {
+    if (!post || !post.comments) return 0;
+    return countAllReplies(post.comments);
+  }
+
   function renderPostCard(p) {
     const previewLen = 220;
     const preview =
@@ -649,6 +712,25 @@
           )
           .join("")}</div>`
       : "";
+
+    const replyCount = getPostReplyCount(p);
+    const repliesHtml = `
+      <button class="rf-replies" type="button" data-action="open-detail" title="View replies">
+        <img src="assets/chat_bubble.png" alt="Replies" class="rf-replies-icon">
+        ${replyCount} ${replyCount === 1 ? "reply" : "replies"}
+      </button>
+    `;
+
+    const actionsHtml = `
+      <div class="rf-actions">
+        ${repliesHtml}
+        ${
+          isOwner(p)
+            ? `<button class="rf-action rf-danger" type="button" data-action="delete">Delete</button>`
+            : ``
+        }
+      </div>
+    `;
 
     return `
       <article class="rf-post" data-id="${escapeHtml(p.id)}">
@@ -674,17 +756,12 @@
 
           ${tagsHtml}
 
-          <div class="rf-actions">
-            ${
-              isOwner(p)
-                ? `<button class="rf-action rf-danger" type="button" data-action="delete">Delete</button>`
-                : ``
-            }
-          </div>
+          ${actionsHtml}
         </div>
       </article>
     `;
   }
+
 
   function animatePostsIn() {
     const cards = feed ? feed.querySelectorAll(".rf-post") : [];
@@ -1146,9 +1223,12 @@
         if (action === "upvote") vote(postId, "up");
         if (action === "downvote") vote(postId, "down");
         if (action === "delete") handleDelete(postId);
+
+        // ✅ NEW: click replies button to open detail
+        if (action === "open-detail") openDetail(postId);
+
         return;
       }
-
       openDetail(postId);
     });
   }

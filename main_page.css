@@ -245,7 +245,9 @@ body.is-leaving {
 .user-avatar-img {
   width: 28px;
   height: 28px;
-  object-fit: contain;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
 }
 
 .user-name {
@@ -254,7 +256,7 @@ body.is-leaving {
 }
 
 .btn-logout {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(159, 32, 32, 0.479);
   color: #fff;
 
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -266,7 +268,7 @@ body.is-leaving {
 }
 
 .btn-logout:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(201, 32, 32, 0.562);
 }
 
 /* layout */
@@ -423,49 +425,128 @@ body.is-leaving {
   color: var(--primary-green);
 }
 
-.rf-pill--academics,
-.category-menu li[data-category="Academics"].active {
+/* category colors */
+.rf-pill.rf-pill--academics {
   background: #e8f1ff;
   border-color: #bcd7ff;
   color: #1e40af;
 }
 
-.rf-pill--events,
-.category-menu li[data-category="Events"].active {
+.rf-pill.rf-pill--events {
   background: #fff7ed;
   border-color: #fed7aa;
   color: #9a3412;
 }
 
-.rf-pill--organizations,
-.category-menu li[data-category="Organizations"].active {
+.rf-pill.rf-pill--organizations {
   background: #f3e8ff;
   border-color: #d8b4fe;
   color: #6b21a8;
 }
 
-.rf-pill--buy-sell,
-.category-menu li[data-category="Buy & Sell"].active {
+.rf-pill.rf-pill--buy-sell {
   background: #ffecfb;
   border-color: #fca5ed;
   color: #75155f;
 }
 
-.rf-pill--general-questions,
-.category-menu li[data-category="General Questions"].active {
+.rf-pill.rf-pill--general-questions {
   background: #fcfdf0;
   border-color: #f7f6bb;
   color: #646516;
 }
 
-.rf-pill--professor-reviews,
-.category-menu li[data-category="Professor Reviews"].active {
+.rf-pill.rf-pill--professor-reviews {
   background: #fef2f2;
   border-color: #fecaca;
   color: #991b1b;
 }
 
-/* composer input */
+/*  category bars have colors */
+.category-menu li{
+  position: relative;
+  overflow: hidden;
+}
+
+.category-menu li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:10px;
+  background: transparent;
+}
+
+/* --- Academics --- */
+.category-menu li[data-category="Academics"].active{
+  background:#e8f1ff;
+  border-color:#bcd7ff;
+  color:#1e40af;
+}
+.category-menu li[data-category="Academics"].active::before{
+  background:#1e40af;
+}
+
+/* --- Events --- */
+.category-menu li[data-category="Events"].active{
+  background:#fff7ed;
+  border-color:#fed7aa;
+  color:#9a3412;
+}
+.category-menu li[data-category="Events"].active::before{
+  background:#9a3412;
+}
+
+/* --- Organizations --- */
+.category-menu li[data-category="Organizations"].active{
+  background:#f3e8ff;
+  border-color:#d8b4fe;
+  color:#6b21a8;
+}
+.category-menu li[data-category="Organizations"].active::before{
+  background:#6b21a8;
+}
+
+/* --- Buy & Sell --- */
+.category-menu li[data-category="Buy & Sell"].active{
+  background:#ffecfb;
+  border-color:#fca5ed;
+  color:#75155f;
+}
+.category-menu li[data-category="Buy & Sell"].active::before{
+  background:#75155f;
+}
+
+/* --- General Questions --- */
+.category-menu li[data-category="General Questions"].active{
+  background:#fcfdf0;
+  border-color:#f7f6bb;
+  color:#646516;
+}
+.category-menu li[data-category="General Questions"].active::before{
+  background:#646516;
+}
+
+/* --- Professor Reviews --- */
+.category-menu li[data-category="Professor Reviews"].active{
+  background:#fef2f2;
+  border-color:#fecaca;
+  color:#991b1b;
+}
+.category-menu li[data-category="Professor Reviews"].active::before{
+  background:#991b1b;
+}
+
+.category-menu li[data-category="All"].active{
+  background:#e5f5ec;
+  border-color:#bfe3cf;
+  color:var(--primary-green);
+}
+.category-menu li[data-category="All"].active::before{
+  background:var(--primary-green);
+}
+
 .post-input-container {
   background: white;
   padding: 15px;
@@ -548,7 +629,6 @@ body.is-leaving {
   border: 2px dashed #eee;
 }
 
-/* shared button typography */
 button,
 .btn-primary,
 .btn-secondary,
@@ -842,11 +922,9 @@ button,
 .rf-actions {
   display: flex;
   gap: 10px;
-
   margin-top: 12px;
-  padding-top: 12px;
-
-  border-top: 1px solid rgba(16, 24, 40, 0.08);
+  border-top: none;
+  padding-top: 0;
 }
 
 .rf-action {
@@ -861,6 +939,58 @@ button,
 
   transition: transform 120ms cubic-bezier(0.2, 1.25, 0.22, 1),
     background 120ms ease, border-color 120ms ease;
+}
+
+.rf-replies {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-weight: 900;
+  color: #6b7280;
+
+  background: transparent;
+  border: none;
+  padding: 8px 2px;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.rf-replies:hover {
+  color: #111827;
+}
+
+.rf-replies:focus-visible {
+  outline: 2px solid rgba(180, 35, 90, 0.35);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+.rf-replies {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  color: #6b7280;
+  background: transparent;
+  border: none;
+  padding: 8px 2px;
+  cursor: pointer;
+}
+
+.rf-replies-icon {
+  width: 25px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.rf-replies:hover {
+  color: #111827;
+}
+
+.rf-replies:hover .rf-replies-icon {
+  filter: brightness(0.7);
 }
 
 .rf-action:hover {
@@ -890,7 +1020,7 @@ button,
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding-top: 2px;
+  align-self: center;
 }
 
 .rf-vote-btn {
@@ -1264,7 +1394,6 @@ button,
   background: #fff;
 }
 
-/* accessibility */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1349,7 +1478,7 @@ body.is-ready .layout-container > section:nth-child(3) > * {
   animation: af-modal-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* rules accordion */
+/* rules list */
 .rules-list {
   display: flex;
   flex-direction: column;

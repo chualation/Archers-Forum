@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       e.preventDefault();
 
-      // Add leaving class (CSS handles the smooth animation)
+      // Add leaving class
       document.body.classList.add("is-leaving");
 
       // Navigate after animation finishes
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const togglePw = document.getElementById("togglePw");
 
   if (pwInput && togglePw) {
-    // default state (password hidden)
+    // password is hidden by default
     togglePw.dataset.state = "hidden";
     togglePw.src = "assets/show_pass.png";
     togglePw.alt = "Show password";

@@ -1,387 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="UTF-8">
-        <title>My Profile – Archers Forum</title>
-        <link rel="stylesheet" href="main_page.css">
-        <link rel="stylesheet" href="profile.css">
+  <meta charset="UTF-8" />
+  <title>My Profile – Archers Forum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="main_page.css" />
+  <link rel="stylesheet" href="profile.css" />
 </head>
+
 <body>
-        <!-- Top header reused -->
-        <header class="main-header">
-        <div class="header-left">
-        <button class="btn-back" onclick="window.location.href='forum.html'">
-                ← Back to Forum
-        </button>
+  <header class="main-header">
+    <div class="header-left">
+      <button class="btn-back" type="button" onclick="goBackToMain()">
+        ← Back to Forum
+      </button>
+    </div>
+
+    <div class="header-center"></div>
+
+    <div class="header-right">
+      <button class="btn-logout" type="button" onclick="handleLogout()">
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <main class="profile-page">
+
+    <!-- Banner -->
+    <section class="profile-cover">
+      <img
+        src="assets/default_banner.png"
+        alt="Cover Photo"
+        class="cover-image"
+        id="coverImage"
+      />
+      <div class="cover-gradient"></div>
+      <div class="cover-shadow"></div>
+    </section>
+
+    <div class="profile-container">
+
+      <section class="profile-header">
+        <div class="profile-avatar-wrap">
+          <img
+            src="assets/default_pfp.png"
+            alt="Profile Picture"
+            class="profile-avatar-img"
+            id="profileAvatar"
+          />
         </div>
 
-        <div class="nav-icons">
-        <!-- optional: bell icon if you already use one -->
+        <div class="profile-header-row">
+          <div class="profile-text">
+            <h1 class="profile-display-name">User</h1>
+            <p id="profileEmail" class="profile-email">user@email.com</p>
+            <p class="profile-role">Archer Community Member</p>
+          </div>
+
+          <div class="profile-actions">
+            <button class="btn-edit-profile" type="button" onclick="openEditModal()">
+              Edit Profile
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-number">0</div>
+          <div class="profile-stat-label">Total Posts</div>
         </div>
 
-        <div class="user-pill">
-        <button class="btn-logout" onclick="handleLogout()">Logout</button>
+        <div class="profile-stat">
+          <div class="profile-stat-number">0</div>
+          <div class="profile-stat-label">Threads Created</div>
         </div>
-        </header>
 
-        <main class="profile-page">
-        <!-- Profile Container -->
-        <div class="profile-container">
-                <!-- Cover Photo Section -->
-                <div class="profile-cover-section" onclick="openCoverEditModal()">
-                        <img src="assets/default-cover.jpg" alt="Cover Photo" class="cover-image" id="coverImage">
-                        <div class="cover-overlay"></div>
-                        <div class="cover-edit-overlay">
-                                <div class="cover-edit-text">Click to edit cover photo</div>
-                        </div>
-                </div>
-                
-                <!-- Profile Content Card -->
-                <section class="profile-content-card">
-        <div class="profile-top">
-                <div class="profile-avatar-circle">
-                <img src="assets/profile_pic.png" alt="Profile Picture" class="profile-avatar-img" id="profileAvatar">
-                </div>
-                <div class="profile-main-info">
-                <h1 class="profile-display-name">Angel Chua</h1>
-                <p id="profileEmail" class="profile-email">angelyn_chua@dlsu.edu.ph</p>
-                <p class="profile-role">Archer Community Member</p>
-                </div>
-                <button class="btn-edit-profile" type="button" onclick="openEditModal()">
-                ✏️ Edit Profile
+        <div class="profile-stat">
+          <div class="profile-stat-number">0</div>
+          <div class="profile-stat-label">Total Views</div>
+        </div>
+      </section>
+
+      <!-- Activity -->
+      <section class="profile-activity">
+        <div class="profile-tabs">
+          <button
+            class="profile-tab profile-tab-active"
+            type="button"
+            onclick="switchTab(this, 'threads')"
+          >
+            My Threads (0)
+          </button>
+
+          <button
+            class="profile-tab"
+            type="button"
+            onclick="switchTab(this, 'replies')"
+          >
+            My Replies (0)
+          </button>
+        </div>
+
+        <div class="profile-content-area">
+          <div class="content-section" id="threadsContent">
+            <div class="empty-state">
+              <p>No threads created yet.</p>
+            </div>
+          </div>
+
+          <div class="content-section" id="repliesContent" style="display: none;">
+            <div class="empty-state">
+              <p>No replies posted yet.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="edit-profile-modal" id="editProfileModal" style="display: none;">
+      <div class="edit-profile-overlay" onclick="closeEditModal()"></div>
+
+      <div class="edit-profile-form">
+        <div class="edit-header">
+          <button class="icon-btn" type="button" onclick="closeEditModal()" aria-label="Close">
+            ✕
+          </button>
+          <h2 class="edit-title">Edit profile</h2>
+          <button class="save-btn" type="submit" form="profileEditForm">Save</button>
+        </div>
+
+        <form id="profileEditForm" onsubmit="saveProfile(event)">
+          <!-- Banner & Avatar -->
+          <div class="media">
+            <div class="banner">
+              <img id="editCoverPreview" class="banner-img" src="assets/default_banner.png" alt="Banner preview">
+
+              <!-- Centered banner controls -->
+              <div class="banner-controls" id="bannerControls">
+                <button
+                  class="icon-btn dark add-only"
+                  id="bannerAddBtn"
+                  type="button"
+                  onclick="triggerCoverPicker()"
+                >
+                  <img src="assets/add_change_photo.png" alt="Add" class="icon-img">Add Banner
                 </button>
-        </div>
 
-        <div class="profile-stats-row">
-                <div class="profile-stat-card">
-                <div class="profile-stat-number">0</div>
-                <div class="profile-stat-label">Total Posts</div>
+                <div class="controls-has" id="bannerHasControls">
+                  <button class="icon-btn dark" type="button" onclick="triggerCoverPicker()" aria-label="Change banner">
+                    <img src="assets/add_change_photo.png" alt="Add" class="icon-img">
+                  </button>
+                  <button class="icon-btn dark" type="button" onclick="removeCoverFromEdit()" aria-label="Remove banner">
+                    <img src="assets/delete.png" alt="Delete" class="icon-img">
+                  </button>
                 </div>
-                <div class="profile-stat-card">
-                <div class="profile-stat-number">0</div>
-                <div class="profile-stat-label">Threads Created</div>
+              </div>
+
+              <input
+                type="file"
+                id="coverPicture"
+                name="coverPicture"
+                accept="image/*"
+                onchange="previewCoverInEdit(event)"
+                style="display:none;"
+              />
+            </div>
+
+            <div class="avatar-wrap">
+              <img id="previewImg" class="avatar-img" src="assets/default_pfp.png" alt="Avatar preview">
+
+              <!-- Centered avatar controls -->
+              <div class="avatar-controls" id="avatarControls">
+                <button
+                  class="icon-btn dark add-only"
+                  id="avatarAddBtn"
+                  type="button"
+                  onclick="triggerAvatarPicker()"
+                >
+                  <img src="assets/add_change_photo.png" alt="Add" class="icon-img">
+                </button>
+
+                <div class="controls-has" id="avatarHasControls">
+                  <button class="icon-btn dark" type="button" onclick="triggerAvatarPicker()" aria-label="Change profile photo">
+                    <img src="assets/add_change_photo.png" alt="Add" class="icon-img">
+                  </button>
+                  </button>
                 </div>
-                <div class="profile-stat-card">
-                <div class="profile-stat-number">0</div>
-                <div class="profile-stat-label">Total Views</div>
-                </div>
-                </div>
-                </section>
-                
-                <!-- Threads and Replies Section -->
-                <section class="profile-threads-section">
-                <!-- Tabs row -->
-                <div class="profile-tabs">
-                        <button class="profile-tab profile-tab-active" type="button" onclick="switchTab(this, 'threads')">
-                                My Threads (0)
-                        </button>
-                        <button class="profile-tab" type="button" onclick="switchTab(this, 'replies')">
-                                My Replies (0)
-                        </button>
-                </div>
+              </div>
 
-                <!-- Empty state area -->
-                <div class="profile-content-area">
-                        <!-- My Threads Content -->
-                        <div class="content-section" id="threadsContent">
-                                <div class="empty-state">
-                                        <p>No threads created yet.</p>
-                                </div>
-                        </div>
-                        
-                        <!-- My Replies Content -->
-                        <div class="content-section" id="repliesContent" style="display: none;">
-                                <div class="empty-state">
-                                        <p>No replies posted yet.</p>
-                                </div>
-                        </div>
-                </div>
-                </section>
-        </div>
-        
-        <!-- Cover Photo Edit Modal -->
-        <div class="edit-profile-modal" id="coverEditModal" style="display: none;">
-        <div class="edit-profile-overlay" onclick="closeCoverEditModal()"></div>
-        <div class="edit-profile-form">
-                <div class="edit-profile-header">
-                <h2>Edit Cover Photo</h2>
-                <button class="btn-close-modal" onclick="closeCoverEditModal()">×</button>
-                </div>
-                
-                <form id="coverEditForm" onsubmit="saveCoverPhoto(event)">
-                <div class="form-group">
-                        <label for="coverPictureOnly">Cover Photo</label>
-                        <div class="cover-picture-upload">
-                                <div class="cover-upload-area" onclick="document.getElementById('coverPictureOnly').click()">
-                                        <div class="cover-upload-preview" id="coverOnlyUploadPreview">
-                                                <img id="coverOnlyPreviewImg" src="assets/default-cover.jpg" alt="Cover Preview" class="cover-preview-image">
-                                        </div>
-                                        <div class="cover-upload-overlay">
-                                                <div class="upload-text">Click to change cover photo</div>
-                                        </div>
-                                </div>
-                                <input type="file" id="coverPictureOnly" name="coverPictureOnly" accept="image/*" onchange="previewCoverOnlyImage(event)" style="display: none;">
-                        </div>
-                        <button type="button" class="btn-remove-photo" onclick="removeCoverPhoto()">🗑️ Remove Cover Photo</button>
-                </div>
-                
-                <div class="form-actions">
-                        <button type="button" class="btn-cancel" onclick="closeCoverEditModal()">Cancel</button>
-                        <button type="submit" class="btn-save">Save Cover Photo</button>
-                </div>
-                </form>
-        </div>
-        </div>
+              <input
+                type="file"
+                id="profilePicture"
+                name="profilePicture"
+                accept="image/*"
+                onchange="previewImage(event)"
+                style="display:none;"
+              />
+            </div>
+          </div>
 
-        <!-- Edit Profile Modal -->
-        <div class="edit-profile-modal" id="editProfileModal" style="display: none;">
-        <div class="edit-profile-overlay" onclick="closeEditModal()"></div>
-        <div class="edit-profile-form">
-                <div class="edit-profile-header">
-                <h2>Edit Profile</h2>
-                <button class="btn-close-modal" onclick="closeEditModal()">×</button>
-                </div>
-                
-                <form id="profileEditForm" onsubmit="saveProfile(event)">
-                <div class="form-group">
-                        <label for="profilePicture">Profile Picture</label>
-                        <div class="profile-picture-upload">
-                                <div class="upload-area" onclick="document.getElementById('profilePicture').click()">
-                                        <div class="upload-preview" id="uploadPreview">
-                                                <img id="previewImg" src="assets/profile_pic.png" alt="Profile Preview" class="preview-image">
-                                        </div>
-                                        <div class="upload-overlay">
-                                                <div class="upload-icon">📷</div>
-                                                <div class="upload-text">Click to change photo</div>
-                                        </div>
-                                </div>
-                                <input type="file" id="profilePicture" name="profilePicture" accept="image/*" onchange="previewImage(event)" style="display: none;">
-                        </div>
-                        <button type="button" class="btn-remove-photo" onclick="removeProfilePicture()">🗑️ Remove Profile Picture</button>
-                </div>
-                
-                <div class="form-row">
-                        <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name">
-                        </div>
-                        <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name">
-                        </div>
-                </div>
-                
-                <div class="form-group">
-                        <label for="userRole">Role</label>
-                        <input type="text" id="userRole" name="userRole" value="Archer Community Member" readonly>
-                </div>
-                
-                <div class="form-group">
-                        <label for="userEmail">Email</label>
-                        <input type="email" id="userEmail" name="userEmail" readonly>
-                </div>
-                
-                <div class="form-actions">
-                        <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
-                        <button type="submit" class="btn-save">Save Changes</button>
-                </div>
-                </form>
-        </div>
-        </div>
-        </main>
+          <!-- Fields -->
+          <div class="fields">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" />
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" />
+              </div>
+            </div>
 
-        <script>
-        // Session variables (reset when page is closed)
-        var currentFirstName = "Angel";
-        var currentLastName = "Chua";
-        
-        // Use stored email; default fallback
-        (function () {
-        var email = localStorage.getItem("af_user_email") || "angelyn_chua@dlsu.edu.ph";
-        var el = document.getElementById("profileEmail");
-        if (el) el.textContent = email;
-        })();
+            <div class="form-group">
+              <label for="userRole">Role</label>
+              <input type="text" id="userRole" name="userRole" value="Archer Community Member" readonly />
+            </div>
 
-        function handleLogout() {
-        localStorage.removeItem("af_user");
-        localStorage.removeItem("af_user_email");
-        window.location.href = "login.html";
-        }
+            <div class="form-group">
+              <label for="userEmail">Email</label>
+              <input type="email" id="userEmail" name="userEmail" readonly />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
 
-        function switchTab(clickedTab, tabType) {
-        // Remove active class from all tabs
-        var tabs = document.querySelectorAll('.profile-tab');
-        tabs.forEach(function(tab) {
-                tab.classList.remove('profile-tab-active');
-        });
-        
-        // Add active class to clicked tab
-        clickedTab.classList.add('profile-tab-active');
-        
-        // Show/hide content based on tab type
-        var threadsContent = document.getElementById('threadsContent');
-        var repliesContent = document.getElementById('repliesContent');
-        
-        if (tabType === 'threads') {
-                threadsContent.style.display = 'block';
-                repliesContent.style.display = 'none';
-        } else if (tabType === 'replies') {
-                threadsContent.style.display = 'none';
-                repliesContent.style.display = 'block';
-        }
-        }
+  </main>
 
-        function openEditModal() {
-        var modal = document.getElementById('editProfileModal');
-        modal.style.display = 'block';
-        
-        // Pre-fill form with current values
-        var email = localStorage.getItem("af_user_email") || "angelyn_chua@dlsu.edu.ph";
-        document.getElementById('userEmail').value = email;
-        
-        // Pre-fill name fields with current session values
-        document.getElementById('firstName').value = currentFirstName;
-        document.getElementById('lastName').value = currentLastName;
-        }
-
-        function openCoverEditModal() {
-        var modal = document.getElementById('coverEditModal');
-        modal.style.display = 'block';
-        
-        // Pre-fill cover photo preview
-        var coverImage = document.getElementById('coverImage');
-        var coverOnlyPreviewImg = document.getElementById('coverOnlyPreviewImg');
-        if (coverImage && coverOnlyPreviewImg) {
-                coverOnlyPreviewImg.src = coverImage.src;
-        }
-        }
-
-        function closeEditModal() {
-        var modal = document.getElementById('editProfileModal');
-        modal.style.display = 'none';
-        }
-
-        function closeCoverEditModal() {
-        var modal = document.getElementById('coverEditModal');
-        modal.style.display = 'none';
-        }
-
-        function saveProfile(event) {
-        event.preventDefault();
-        
-        // Get form values
-        var firstName = document.getElementById('firstName').value;
-        var lastName = document.getElementById('lastName').value;
-        
-        // Save names to session variables (not localStorage)
-        currentFirstName = firstName;
-        currentLastName = lastName;
-        
-        // Update display name on profile page
-        var displayNameEl = document.querySelector('.profile-display-name');
-        if (displayNameEl && firstName && lastName) {
-                displayNameEl.textContent = firstName + ' ' + lastName;
-        }
-        
-        // Handle profile picture upload
-        var previewImg = document.getElementById('previewImg');
-        var profileAvatar = document.getElementById('profileAvatar');
-        if (previewImg && profileAvatar && previewImg.src && !previewImg.src.includes('profile_pic.png')) {
-                profileAvatar.src = previewImg.src;
-        }
-        
-        // Close modal
-        closeEditModal();
-        
-        // Show success message (optional)
-        alert('Profile updated successfully!');
-        }
-
-        function previewImage(event) {
-        var file = event.target.files[0];
-        if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                        var previewImg = document.getElementById('previewImg');
-                        previewImg.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-        }
-        }
-
-        function previewCoverOnlyImage(event) {
-        var file = event.target.files[0];
-        if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                        var coverOnlyPreviewImg = document.getElementById('coverOnlyPreviewImg');
-                        coverOnlyPreviewImg.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-        }
-        }
-
-        function saveCoverPhoto(event) {
-        event.preventDefault();
-        
-        // Handle cover photo upload
-        var coverOnlyPreviewImg = document.getElementById('coverOnlyPreviewImg');
-        var coverImage = document.getElementById('coverImage');
-        if (coverOnlyPreviewImg && coverImage && coverOnlyPreviewImg.src && !coverOnlyPreviewImg.src.includes('default-cover.jpg')) {
-                coverImage.src = coverOnlyPreviewImg.src;
-        }
-        
-        // Close modal
-        closeCoverEditModal();
-        
-        // Show success message
-        alert('Cover photo updated successfully!');
-        }
-
-        function removeCoverPhoto() {
-        // Reset cover photo to default in preview
-        var coverOnlyPreviewImg = document.getElementById('coverOnlyPreviewImg');
-        if (coverOnlyPreviewImg) {
-                coverOnlyPreviewImg.src = 'assets/default-cover.jpg';
-        }
-        
-        // Reset main cover photo
-        var coverImage = document.getElementById('coverImage');
-        if (coverImage) {
-                coverImage.src = 'assets/default-cover.jpg';
-        }
-        
-        // Reset file input
-        var coverInput = document.getElementById('coverPictureOnly');
-        if (coverInput) {
-                coverInput.value = '';
-        }
-        
-        alert('Cover photo removed successfully!');
-        }
-
-        function removeProfilePicture() {
-        // Reset profile picture to default in preview
-        var previewImg = document.getElementById('previewImg');
-        if (previewImg) {
-                previewImg.src = 'assets/profile_pic.png';
-        }
-        
-        // Reset main profile picture
-        var profileAvatar = document.getElementById('profileAvatar');
-        if (profileAvatar) {
-                profileAvatar.src = 'assets/profile_pic.png';
-        }
-        
-        // Reset file input
-        var profileInput = document.getElementById('profilePicture');
-        if (profileInput) {
-                profileInput.value = '';
-        }
-        
-        alert('Profile picture removed successfully!');
-        }
-        </script>
+  <script src="storage.js"></script>
+  <script src="profile.js"></script>
 </body>
 </html>
-
