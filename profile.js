@@ -1,4 +1,6 @@
 (function () {
+  const savedTheme = localStorage.getItem("af_theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
   const name = localStorage.getItem("af_user");
   const email = localStorage.getItem("af_user_email");
 
