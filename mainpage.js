@@ -290,6 +290,39 @@ hydrateHeaderUser();
 
   const searchHistoryEl = document.getElementById("searchHistory");
 
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.getElementById("themeIcon");
+
+  const themeSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+  const currentTheme = localStorage.getItem("af_theme") || "light";
+  
+  if (currentTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    themeSwitch.checked = true; // Slide it to the dark position
+  } else {
+    document.documentElement.setAttribute("data-theme", "light");
+    themeSwitch.checked = false; // Slide it to the light position
+  }
+
+  // 2. Listen for switch toggle
+  if (themeSwitch) {
+    themeSwitch.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        document.documentElement.setAttribute("data-theme", "dark");
+        localStorage.setItem("af_theme", "dark");
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+        localStorage.setItem("af_theme", "light");
+      }
+    });
+  }
+
+  function updateIcon(theme) {
+    if (!themeIcon) return;
+    // Change icon based on mode (ensure these files exist in assets/)
+    themeIcon.src = theme === "dark" ? "assets/sun.png" : "assets/moon.png";
+  }
+
   if (profileLink) {
     profileLink.addEventListener("click", (e) => {
       const href = profileLink.getAttribute("href");
