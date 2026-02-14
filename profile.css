@@ -518,3 +518,215 @@ body.modal-open {
     left: 12px;
   }
 }
+
+/* Thread and Reply Items */
+.thread-item,
+.reply-item {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.thread-item.clickable {
+  cursor: pointer;
+}
+
+.reply-item.clickable {
+  cursor: pointer;
+}
+
+.thread-item:hover,
+.reply-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.thread-item.clickable:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(31, 112, 60, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.reply-item.clickable:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(31, 112, 60, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.thread-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.thread-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.click-indicator {
+  color: #6b7280;
+  font-weight: 400;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.clickable:hover .click-indicator {
+  color: #1f703c;
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.thread-category {
+  background: rgba(31, 112, 60, 0.1);
+  color: #1f703c;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 12px;
+}
+
+.thread-meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.thread-body {
+  color: #374151;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.thread-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag-chip {
+  background: rgba(17, 24, 39, 0.08);
+  color: #374151;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.reply-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.reply-type {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.reply-thread {
+  font-weight: 600;
+  color: #111827;
+  font-size: 14px;
+}
+
+.reply-context {
+  background: rgba(17, 24, 39, 0.05);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 3px solid rgba(31, 112, 60, 0.3);
+}
+
+.reply-context small {
+  color: #6b7280;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.reply-body {
+  color: #374151;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.reply-meta {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Dark theme styles for thread and reply items */
+[data-theme="dark"] .thread-item,
+[data-theme="dark"] .reply-item {
+  background-color: #242526 !important;
+  border: 1px solid #3e4042 !important;
+}
+
+[data-theme="dark"] .thread-item.clickable:hover {
+  background-color: #2d2e2f !important;
+  border-color: rgba(31, 112, 60, 0.4) !important;
+}
+
+[data-theme="dark"] .reply-item.clickable:hover {
+  background-color: #2d2e2f !important;
+  border-color: rgba(31, 112, 60, 0.4) !important;
+}
+
+[data-theme="dark"] .thread-title,
+[data-theme="dark"] .reply-thread {
+  color: #e4e6eb !important;
+}
+
+[data-theme="dark"] .click-indicator {
+  color: #8a8d91 !important;
+}
+
+[data-theme="dark"] .clickable:hover .click-indicator {
+  color: #4ade80 !important;
+}
+
+[data-theme="dark"] .thread-body,
+[data-theme="dark"] .reply-body {
+  color: #b0b3b8 !important;
+}
+
+[data-theme="dark"] .thread-meta,
+[data-theme="dark"] .reply-meta,
+[data-theme="dark"] .reply-type {
+  color: #8a8d91 !important;
+}
+
+[data-theme="dark"] .thread-category {
+  background: rgba(31, 112, 60, 0.2) !important;
+  color: #4ade80 !important;
+}
+
+[data-theme="dark"] .tag-chip {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #b0b3b8 !important;
+}
+
+[data-theme="dark"] .reply-context {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-left: 3px solid rgba(31, 112, 60, 0.4) !important;
+}
+
+[data-theme="dark"] .reply-context small {
+  color: #8a8d91 !important;
+}
