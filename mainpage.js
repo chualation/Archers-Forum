@@ -1400,7 +1400,3 @@ hydrateHeaderUser();
   }
 })();
 
-
-  render();
-})();
-
