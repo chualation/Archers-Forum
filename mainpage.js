@@ -346,6 +346,8 @@ hydrateHeaderUser();
       localStorage.removeItem("af_user");
       localStorage.removeItem("af_user_email");
       localStorage.removeItem("af_user_password");
+      localStorage.removeItem("af_profile_avatar");
+      localStorage.removeItem("af_profile_cover");
       navigateWithFade("login.html");
     });
   }
@@ -355,6 +357,8 @@ hydrateHeaderUser();
   votesByUser[email] = votesByUser[email] || {};
 
   if (posts.length === 0) {
+    const now = Date.now();
+    
     posts = [
       {
         id: makeId("post"),
@@ -364,9 +368,23 @@ hydrateHeaderUser();
         body: "I'm planning my schedule for next term, Do any of you have GE recommendations? preferably something not too heavy. TYIA!",
         authorName: "Chino Moreno",
         authorEmail: "chino_moreno@dlsu.edu.ph",
-        createdAt: Date.now() - 1000 * 60 * 60 * 6,
+        createdAt: now - 1000 * 60 * 60 * 6,
         score: 5,
-        comments: [],
+        comments: [{
+            id: makeId("comment"), // Changed from "c"
+            authorName: "Gina Cole",
+            authorEmail: "gina_cole@dlsu.edu.ph",
+            body: "I recommend GEWORLD! It's very interesting and the workload is manageable.",
+            createdAt: now - 1000 * 60 * 60 * 5,
+            replies: [{
+                id: makeId("reply"), // Changed from "r"
+                authorName: "Alden Richards",
+                authorEmail: "alden_richards@dlsu.edu.ph",
+                body: "Agreed! Just make sure to pick a good professor so the readings aren't too boring.",
+                createdAt: now - 1000 * 60 * 60 * 4,
+                replies: []
+            }]
+        }],
       },
       {
         id: makeId("post"),
@@ -376,9 +394,23 @@ hydrateHeaderUser();
         body: "What CCS orgs would you guys recommend for me to join? DLSU ACM is on top of my list but I'm open to suggestions!",
         authorName: "Gina Cole",
         authorEmail: "gina_cole@dlsu.edu.ph",
-        createdAt: Date.now() - 1000 * 60 * 60 * 3,
+        createdAt: now - 1000 * 60 * 60 * 3,
         score: 8,
-        comments: [],
+        comments: [{
+            id: makeId("comment"),
+            authorName: "Alden Richards",
+            authorEmail: "alden_richards@dlsu.edu.ph",
+            body: "ACM is great! You should also check out LSCS if you're into software development.",
+            createdAt: now - 1000 * 60 * 60 * 2,
+            replies: [{
+                id: makeId("reply"),
+                authorName: "Molly Vouge",
+                authorEmail: "molly_vouge@dlsu.edu.ph",
+                body: "Does LSCS accept frosh for officer positions immediately or do we wait for next year?",
+                createdAt: now - 1000 * 60 * 60 * 1,
+                replies: []
+            }]
+        }],
       },
       {
         id: makeId("post"),
@@ -388,9 +420,23 @@ hydrateHeaderUser();
         body: "Selling my home-made dubai chewy cookie for Php 150/per. DM me if interested!",
         authorName: "Alden Richards",
         authorEmail: "alden_richards@dlsu.edu.ph",
-        createdAt: Date.now() - 1000 * 60 * 60,
+        createdAt: now - 1000 * 60 * 60,
         score: 2,
-        comments: [],
+        comments: [{
+            id: makeId("comment"),
+            authorName: "Molly Vouge",
+            authorEmail: "molly_vouge@dlsu.edu.ph",
+            body: "Sent you a DM! I'd like to order two pieces for tomorrow.",
+            createdAt: now - 1000 * 60 * 30,
+            replies: [{
+                id: makeId("reply"),
+                authorName: "Rico Blanco",
+                authorEmail: "rico_blanco@dlsu.edu.ph",
+                body: "Save some for me! I've heard these are actually really good.",
+                createdAt: now - 1000 * 60 * 10,
+                replies: []
+            }]
+        }],
       },
       {
         id: makeId("post"),
@@ -400,9 +446,49 @@ hydrateHeaderUser();
         body: "Has anyone taken Sir. Berris? How was your experience?",
         authorName: "Molly Vouge",
         authorEmail: "molly_vouge@dlsu.edu.ph",
-        createdAt: Date.now() - 1000 * 60 * 40 *2,
+        createdAt: now - 1000 * 60 * 40 * 2,
         score: 10,
-        comments: [],
+        comments: [{
+            id: makeId("comment"),
+            authorName: "Rico Blanco",
+            authorEmail: "rico_blanco@dlsu.edu.ph",
+            body: "He is a very fair grader and explains concepts very clearly. Highly recommended!",
+            createdAt: now - 1000 * 60 * 15,
+            replies: [{
+                id: makeId("reply"),
+                authorName: "Chino Moreno",
+                authorEmail: "chino_moreno@dlsu.edu.ph",
+                body: "Is he strict with attendance? My schedule for that slot is a bit tight.",
+                createdAt: now - 1000 * 60 * 5,
+                replies: []
+            }]
+        }],
+      },
+      {
+        id: makeId("post"),
+        title: "Best study spots in Henry Sy Building?",
+        category: "General Questions",
+        tags: ["study", "henry-sy", "library"],
+        body: "I'm looking for a quiet place with good outlets in Henry Sy. Any floor recommendations? 6th floor seems too crowded lately.",
+        authorName: "Rico Blanco",
+        authorEmail: "rico_blanco@dlsu.edu.ph",
+        createdAt: now - 1000 * 60 * 60 * 24, 
+        score: 12,
+        comments: [{
+            id: makeId("comment"),
+            authorName: "Chino Moreno",
+            authorEmail: "chino_moreno@dlsu.edu.ph",
+            body: "Try the 9th floor! It's usually much quieter and has a great view of the skyline.",
+            createdAt: now - 1000 * 60 * 60 * 20,
+            replies: [{
+                id: makeId("reply"),
+                authorName: "Gina Cole",
+                authorEmail: "gina_cole@dlsu.edu.ph",
+                body: "Shh! Don't tell everyone, the 9th floor is my secret spot! Haha.",
+                createdAt: now - 1000 * 60 * 60 * 18,
+                replies: []
+            }]
+        }]
       },
     ];
     saveJSON(POSTS_KEY, posts);
