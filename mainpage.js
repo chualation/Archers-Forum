@@ -282,6 +282,7 @@ hydrateHeaderUser();
   const commentForm = document.getElementById("commentForm");
   const commentText = document.getElementById("commentText");
   const commentsList = document.getElementById("commentsList");
+  const submitCommentBtn = document.getElementById("submitCommentBtn");
 
   const sortDropdown = document.getElementById("sortDropdown");
   const sortBtn = document.getElementById("sortBtn");
@@ -298,10 +299,10 @@ hydrateHeaderUser();
   
   if (currentTheme === "dark") {
     document.documentElement.setAttribute("data-theme", "dark");
-    themeSwitch.checked = true; // Slide it to the dark position
+    themeSwitch.checked = true;
   } else {
     document.documentElement.setAttribute("data-theme", "light");
-    themeSwitch.checked = false; // Slide it to the light position
+    themeSwitch.checked = false;
   }
 
   // 2. Listen for switch toggle
@@ -346,8 +347,6 @@ hydrateHeaderUser();
       localStorage.removeItem("af_user");
       localStorage.removeItem("af_user_email");
       localStorage.removeItem("af_user_password");
-      localStorage.removeItem("af_profile_avatar");
-      localStorage.removeItem("af_profile_cover");
       navigateWithFade("login.html");
     });
   }
@@ -357,8 +356,6 @@ hydrateHeaderUser();
   votesByUser[email] = votesByUser[email] || {};
 
   if (posts.length === 0) {
-    const now = Date.now();
-    
     posts = [
       {
         id: makeId("post"),
@@ -368,23 +365,9 @@ hydrateHeaderUser();
         body: "I'm planning my schedule for next term, Do any of you have GE recommendations? preferably something not too heavy. TYIA!",
         authorName: "Chino Moreno",
         authorEmail: "chino_moreno@dlsu.edu.ph",
-        createdAt: now - 1000 * 60 * 60 * 6,
+        createdAt: Date.now() - 1000 * 60 * 60 * 6,
         score: 5,
-        comments: [{
-            id: makeId("comment"), // Changed from "c"
-            authorName: "Gina Cole",
-            authorEmail: "gina_cole@dlsu.edu.ph",
-            body: "I recommend GEWORLD! It's very interesting and the workload is manageable.",
-            createdAt: now - 1000 * 60 * 60 * 5,
-            replies: [{
-                id: makeId("reply"), // Changed from "r"
-                authorName: "Alden Richards",
-                authorEmail: "alden_richards@dlsu.edu.ph",
-                body: "Agreed! Just make sure to pick a good professor so the readings aren't too boring.",
-                createdAt: now - 1000 * 60 * 60 * 4,
-                replies: []
-            }]
-        }],
+        comments: [],
       },
       {
         id: makeId("post"),
@@ -394,23 +377,9 @@ hydrateHeaderUser();
         body: "What CCS orgs would you guys recommend for me to join? DLSU ACM is on top of my list but I'm open to suggestions!",
         authorName: "Gina Cole",
         authorEmail: "gina_cole@dlsu.edu.ph",
-        createdAt: now - 1000 * 60 * 60 * 3,
+        createdAt: Date.now() - 1000 * 60 * 60 * 3,
         score: 8,
-        comments: [{
-            id: makeId("comment"),
-            authorName: "Alden Richards",
-            authorEmail: "alden_richards@dlsu.edu.ph",
-            body: "ACM is great! You should also check out LSCS if you're into software development.",
-            createdAt: now - 1000 * 60 * 60 * 2,
-            replies: [{
-                id: makeId("reply"),
-                authorName: "Molly Vouge",
-                authorEmail: "molly_vouge@dlsu.edu.ph",
-                body: "Does LSCS accept frosh for officer positions immediately or do we wait for next year?",
-                createdAt: now - 1000 * 60 * 60 * 1,
-                replies: []
-            }]
-        }],
+        comments: [],
       },
       {
         id: makeId("post"),
@@ -420,23 +389,9 @@ hydrateHeaderUser();
         body: "Selling my home-made dubai chewy cookie for Php 150/per. DM me if interested!",
         authorName: "Alden Richards",
         authorEmail: "alden_richards@dlsu.edu.ph",
-        createdAt: now - 1000 * 60 * 60,
+        createdAt: Date.now() - 1000 * 60 * 60,
         score: 2,
-        comments: [{
-            id: makeId("comment"),
-            authorName: "Molly Vouge",
-            authorEmail: "molly_vouge@dlsu.edu.ph",
-            body: "Sent you a DM! I'd like to order two pieces for tomorrow.",
-            createdAt: now - 1000 * 60 * 30,
-            replies: [{
-                id: makeId("reply"),
-                authorName: "Rico Blanco",
-                authorEmail: "rico_blanco@dlsu.edu.ph",
-                body: "Save some for me! I've heard these are actually really good.",
-                createdAt: now - 1000 * 60 * 10,
-                replies: []
-            }]
-        }],
+        comments: [],
       },
       {
         id: makeId("post"),
@@ -446,49 +401,9 @@ hydrateHeaderUser();
         body: "Has anyone taken Sir. Berris? How was your experience?",
         authorName: "Molly Vouge",
         authorEmail: "molly_vouge@dlsu.edu.ph",
-        createdAt: now - 1000 * 60 * 40 * 2,
+        createdAt: Date.now() - 1000 * 60 * 40 *2,
         score: 10,
-        comments: [{
-            id: makeId("comment"),
-            authorName: "Rico Blanco",
-            authorEmail: "rico_blanco@dlsu.edu.ph",
-            body: "He is a very fair grader and explains concepts very clearly. Highly recommended!",
-            createdAt: now - 1000 * 60 * 15,
-            replies: [{
-                id: makeId("reply"),
-                authorName: "Chino Moreno",
-                authorEmail: "chino_moreno@dlsu.edu.ph",
-                body: "Is he strict with attendance? My schedule for that slot is a bit tight.",
-                createdAt: now - 1000 * 60 * 5,
-                replies: []
-            }]
-        }],
-      },
-      {
-        id: makeId("post"),
-        title: "Best study spots in Henry Sy Building?",
-        category: "General Questions",
-        tags: ["study", "henry-sy", "library"],
-        body: "I'm looking for a quiet place with good outlets in Henry Sy. Any floor recommendations? 6th floor seems too crowded lately.",
-        authorName: "Rico Blanco",
-        authorEmail: "rico_blanco@dlsu.edu.ph",
-        createdAt: now - 1000 * 60 * 60 * 24, 
-        score: 12,
-        comments: [{
-            id: makeId("comment"),
-            authorName: "Chino Moreno",
-            authorEmail: "chino_moreno@dlsu.edu.ph",
-            body: "Try the 9th floor! It's usually much quieter and has a great view of the skyline.",
-            createdAt: now - 1000 * 60 * 60 * 20,
-            replies: [{
-                id: makeId("reply"),
-                authorName: "Gina Cole",
-                authorEmail: "gina_cole@dlsu.edu.ph",
-                body: "Shh! Don't tell everyone, the 9th floor is my secret spot! Haha.",
-                createdAt: now - 1000 * 60 * 60 * 18,
-                replies: []
-            }]
-        }]
+        comments: [],
       },
     ];
     saveJSON(POSTS_KEY, posts);
@@ -532,12 +447,30 @@ hydrateHeaderUser();
 
   function openDetail(postId) {
     activePostId = postId;
+    
+    // Clear comment text when opening a new post
+    if (commentText) {
+      commentText.value = "";
+    }
+    
     renderDetail();
     if (detailOverlay) openOverlay(detailOverlay);
+    
+    // Focus on comment text area after a brief delay to ensure modal is open
+    setTimeout(() => {
+      if (commentText) {
+        commentText.focus();
+      }
+    }, 150);
   }
 
   function closeDetail() {
     activePostId = null;
+    
+    if (commentText) {
+      commentText.value = "";
+    }
+    
     if (detailOverlay) closeOverlay(detailOverlay);
   }
 
@@ -797,7 +730,7 @@ hydrateHeaderUser();
     let total = 0;
 
     (commentList || []).forEach((c) => {
-      total += 1; // count this comment
+      total += 1; 
       if (c.replies && c.replies.length > 0) {
         total += countAllReplies(c.replies);
       }
@@ -832,7 +765,9 @@ hydrateHeaderUser();
           .join("")}</div>`
       : "";
 
-    const replyCount = getPostReplyCount(p);
+    // Get the most current reply count
+    const currentPost = getPostById(p.id) || p;
+    const replyCount = getPostReplyCount(currentPost);
     const repliesHtml = `
       <button class="rf-replies" type="button" data-action="open-detail" title="View replies">
         <img src="assets/chat_bubble.png" alt="Replies" class="rf-replies-icon">
@@ -1107,6 +1042,11 @@ hydrateHeaderUser();
 
     closeComposer();
     render();
+
+    // Refresh profile data if available (for activity tracking)
+    if (window.refreshProfileData && typeof window.refreshProfileData === 'function') {
+      window.refreshProfileData();
+    }
   }
 
   function closeSortMenu() {
@@ -1197,8 +1137,8 @@ hydrateHeaderUser();
     });
   }
 
-  if (commentForm) {
-    commentForm.addEventListener("submit", (e) => {
+  if (submitCommentBtn) {
+    submitCommentBtn.addEventListener("click", (e) => {
       e.preventDefault();
       if (!commentText) return;
 
@@ -1207,6 +1147,10 @@ hydrateHeaderUser();
 
       const p = getPostById(activePostId);
       if (!p) return;
+
+      // Get the submit button for visual feedback
+      submitCommentBtn.disabled = true;
+      submitCommentBtn.textContent = 'Posting...';
 
       shouldAnimateFeed = false;
 
@@ -1223,7 +1167,26 @@ hydrateHeaderUser();
       saveJSON(POSTS_KEY, posts);
       commentText.value = "";
       renderComments();
-      render();
+      render(); // This will update the reply count on post cards
+
+      // Refresh profile data if available (for activity tracking)
+      if (window.refreshProfileData && typeof window.refreshProfileData === 'function') {
+        window.refreshProfileData();
+      }
+
+      // Reset submit button
+      submitCommentBtn.disabled = false;
+      submitCommentBtn.textContent = 'Post Comment';
+    });
+  }
+
+  // Keep the form submit handler for backward compatibility but prevent default
+  if (commentForm) {
+    commentForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (submitCommentBtn) {
+        submitCommentBtn.click();
+      }
     });
   }
 
@@ -1295,6 +1258,11 @@ hydrateHeaderUser();
 
         renderComments();
         render();
+
+        // Refresh profile data if available (for activity tracking)
+        if (window.refreshProfileData && typeof window.refreshProfileData === 'function') {
+          window.refreshProfileData();
+        }
         return;
       }
 
@@ -1316,7 +1284,12 @@ hydrateHeaderUser();
 
             saveJSON(POSTS_KEY, posts);
             renderComments();
-            render();
+            render(); 
+
+            // Refresh profile data if available (for activity tracking)
+            if (window.refreshProfileData && typeof window.refreshProfileData === 'function') {
+              window.refreshProfileData();
+            }
           },
         );
       }
@@ -1343,7 +1316,6 @@ hydrateHeaderUser();
         if (action === "downvote") vote(postId, "down");
         if (action === "delete") handleDelete(postId);
 
-        // ✅ NEW: click replies button to open detail
         if (action === "open-detail") openDetail(postId);
 
         return;
@@ -1414,4 +1386,21 @@ hydrateHeaderUser();
   }
 
   render();
+  
+  // Check if we need to open a specific post (from profile navigation)
+  const openPostId = localStorage.getItem("af_open_post");
+  if (openPostId) {
+    localStorage.removeItem("af_open_post"); 
+    setTimeout(() => {
+      if (commentText) {
+        commentText.value = "";
+      }
+      openDetail(openPostId);
+    }, 100);
+  }
 })();
+
+
+  render();
+})();
+
