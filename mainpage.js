@@ -405,6 +405,18 @@ hydrateHeaderUser();
         score: 10,
         comments: [],
       },
+      {
+        id: makeId("post"),
+        title: "Orgs that offer internship opportunities abroad?",
+        category: "Organizations",
+        tags: ["internship", "job", "abroad", "exchange"],
+        body: "Looking for any orgs that give out internship opportunities abroad! Mostly in asia or europe if possible. Thanks in advance!",
+        authorName: "Leggy Burd",
+        authorEmail: "leggy_burd@dlsu.edu.ph",
+        createdAt: Date.now() - 1000 * 60 * 40 *2,
+        score: 7,
+        comments: ["helloo! i've heard aiesec offers exchange but the application process to get in the org is hard :("],
+      },
     ];
     saveJSON(POSTS_KEY, posts);
   }
