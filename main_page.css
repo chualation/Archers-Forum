@@ -2294,3 +2294,36 @@ input:checked + .slider:before {
 [data-theme="dark"] .rules-card a:hover {
     color: #ffffff !important;
 }
+
+/* Dark Mode Category Hover*/
+.category-menu li {
+  background-color: #ffffff !important; 
+  color: #0b2b17 !important;
+  border: 1px solid #ddd !important;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-menu li:hover:not(.active) {
+  background-color: #143621 !important;
+  color: #ffffff !important;
+  border-color: #143621 !important;
+  transform: translateY(-2px);
+}
+
+.category-menu li.active {
+  background-color: #d1e7dd !important;
+  color: #143621 !important;
+  font-weight: 800 !important;
+  border: 2px solid #143621 !important;
+}
+
+[data-theme="dark"] .category-menu li:not(:hover):not(.active) {
+  background-color: #ffffff !important;
+  color: #0b2b17 !important;
+}
