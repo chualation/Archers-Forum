@@ -367,7 +367,16 @@ hydrateHeaderUser();
         authorEmail: "chino_moreno@dlsu.edu.ph",
         createdAt: Date.now() - 1000 * 60 * 60 * 6,
         score: 5,
-        comments: [],
+        comments: [
+          {
+            id: makeId("cmt"),
+            authorName: "Alyssa Tan",
+            authorEmail: "alyssa_tan@dlsu.edu.ph",
+            body: "GELITPH & GEETHIC were light imo! but at the end of the day, it would still depend on how your prof is like 😭 ",
+            createdAt: Date.now() - 1000 * 60 * 60 * 5,
+            score: 2,
+          },
+        ],
       },
       {
         id: makeId("post"),
@@ -379,7 +388,16 @@ hydrateHeaderUser();
         authorEmail: "gina_cole@dlsu.edu.ph",
         createdAt: Date.now() - 1000 * 60 * 60 * 3,
         score: 8,
-        comments: [],
+        comments: [
+          {
+            id: makeId("cmt"),
+            authorName: "Marco Reyes",
+            authorEmail: "marco_reyes@dlsu.edu.ph",
+            body: "ACM is a solid pick. If you want to serve the student body, you can try CSG or your batch government.",
+            createdAt: Date.now() - 1000 * 60 * 60 * 2,
+            score: 3,
+          },
+        ],
       },
       {
         id: makeId("post"),
@@ -391,19 +409,45 @@ hydrateHeaderUser();
         authorEmail: "alden_richards@dlsu.edu.ph",
         createdAt: Date.now() - 1000 * 60 * 60,
         score: 2,
-        comments: [],
+        comments: [
+          {
+            id: makeId("cmt"),
+            authorName: "Bea Santos",
+            authorEmail: "bea_santos@dlsu.edu.ph",
+            body: "Do you do meetups inside campus? Also is it available for bulk orders? 👀",
+            createdAt: Date.now() - 1000 * 60 * 35,
+            score: 1,
+          },
+          {
+            id: makeId("cmt"),
+            authorName: "Francis Lim",
+            authorEmail: "francis_lim@dlsu.edu.ph",
+            body: "OMG!! I've been craving those cookies since my trip to Dubai last year. Can you do delivery 😭😭😭? I'm in Makati for the weekend but I can pay for the shipping fee!",
+            createdAt: Date.now() - 1000 * 60 * 30,
+            score: 2,
+          },
+        ],
       },
       {
         id: makeId("post"),
         title: "Prof Review: Oliver Berris ",
-        category: "Academics",
+        category: "Professor Reviews",
         tags: ["professor", "review"],
         body: "Has anyone taken Sir. Berris? How was your experience?",
         authorName: "Molly Vouge",
         authorEmail: "molly_vouge@dlsu.edu.ph",
-        createdAt: Date.now() - 1000 * 60 * 40 *2,
+        createdAt: Date.now() - 1000 * 60 * 40 * 2,
         score: 10,
-        comments: [],
+        comments: [
+          {
+            id: makeId("cmt"),
+            authorName: "Jasper Lim",
+            authorEmail: "jasper_lim@dlsu.edu.ph",
+            body: "Took him last term for CCAPDEV. He's a really chill  prof and he made web development so much more approachable for me. His lectures are super easy to follow and he's always willing to help if you have questions. I suggest doing your MCO weeks before the deadline since they can pile up towards the end of the term.",
+            createdAt: Date.now() - 1000 * 60 * 55,
+            score: 5,
+          },
+        ],
       },
       {
         id: makeId("post"),
@@ -413,13 +457,23 @@ hydrateHeaderUser();
         body: "Looking for any orgs that give out internship opportunities abroad! Mostly in asia or europe if possible. Thanks in advance!",
         authorName: "Leggy Burd",
         authorEmail: "leggy_burd@dlsu.edu.ph",
-        createdAt: Date.now() - 1000 * 60 * 40 *2,
+        createdAt: Date.now() - 1000 * 60 * 40 * 2,
         score: 7,
-        comments: ["helloo! i've heard aiesec offers exchange but the application process to get in the org is hard :("],
+        comments: [
+          {
+            id: makeId("cmt"),
+            authorName: "Nicole Yu",
+            authorEmail: "nicole_yu@dlsu.edu.ph",
+            body: "You can check DLSU's partner programs and announcements. Some orgs also share exchange/internship postings! (though i'm not sure which orgs specifically).",
+            createdAt: Date.now() - 1000 * 60 * 20,
+            score: 2,
+          },
+        ],
       },
     ];
     saveJSON(POSTS_KEY, posts);
   }
+
 
   let activeCategory = "All";
   let activeTag = null;

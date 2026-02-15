@@ -436,3 +436,22 @@ body.is-ready {
       0 12px 28px rgba(0, 0, 0, 0.12);
   }
 }
+
+.demo-account {
+  margin: 12px 0 20px 0;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: center;
+  color: #555;
+}
+
+.demo-account p {
+  margin: 2px 0;
+}
+
+.demo-account strong {
+  color: #2e7d32; /* subtle green accent */
+}
+
