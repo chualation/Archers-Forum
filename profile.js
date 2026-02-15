@@ -14,8 +14,8 @@
   const POSTS_KEY = AF_STORAGE.KEYS.POSTS;
 
   const PROFILE_KEYS = {
-    COVER: "af_profile_cover",
-    AVATAR: "af_profile_avatar",
+    COVER: `af_profile_cover_${email}`,
+    AVATAR: `af_profile_avatar_${email}`,
   };
 
   const DEFAULTS = {
@@ -473,4 +473,5 @@
       renderUserReplies();
     }
   };
+
 })();
