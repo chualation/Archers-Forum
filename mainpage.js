@@ -12,18 +12,19 @@
   const POSTS_KEY = AF_STORAGE.KEYS.POSTS;
   const VOTES_KEY = AF_STORAGE.KEYS.VOTES;
   const HISTORY_KEY = "af_search_history";
-
+  
   function hydrateHeaderUser() {
-  const headerName = localStorage.getItem("af_user") || "User";
-  const avatar = localStorage.getItem("af_profile_avatar"); 
-
-  const nameNode = document.getElementById("headerUserName") || document.querySelector(".user-name");
-  if (nameNode) nameNode.textContent = headerName;
-
-  const avatarNode = document.getElementById("headerAvatar") || document.querySelector(".user-avatar-img");
-  if (avatarNode) avatarNode.src = avatar ? avatar : "assets/default_pfp.png";
+    const headerName = localStorage.getItem("af_user") || "User";
+    const email = localStorage.getItem("af_user_email");
+    const avatar = email ? localStorage.getItem(`af_profile_avatar_${email}`) : null; 
+  
+    const nameNode = document.getElementById("headerUserName") || document.querySelector(".user-name");
+    if (nameNode) nameNode.textContent = headerName;
+  
+    const avatarNode = document.getElementById("headerAvatar") || document.querySelector(".user-avatar-img");
+    if (avatarNode) avatarNode.src = avatar ? avatar : "assets/default_pfp.png";
 }
-
+  
 hydrateHeaderUser();
   function navigateWithFade(href) {
     document.body.classList.add("is-leaving");
@@ -1464,4 +1465,5 @@ hydrateHeaderUser();
       openDetail(openPostId);
     }, 100);
   }
+
 })();
