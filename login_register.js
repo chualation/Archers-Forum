@@ -21,6 +21,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // user datbase handling
+  const USERS_KEY = "af_users";
+  const CURRENT_KEY = "af_current_email";
+
+  function loadUsers() {
+    try {
+      return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }
+
+  // seed demo account
+  (function seedDemoAccount() {
+    const users = loadUsers();
+    const demoExists = users.some(
+      (u) => (u.email || "").toLowerCase() === "demo@archersforum.com"
+    );
+
+    if (!demoExists) {
+      users.push({
+        name: "Demo User",
+        email: "demo@archersforum.com",
+        password: "demo1234",
+      });
+      saveUsers(users);
+    }
+  })();
+
   // Login/Register form handling
   const form = document.getElementById("authForm");
   if (!form) return;
@@ -75,9 +108,28 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      const users = loadUsers();
+      const emailLower = email.toLowerCase();
+
+      const exists = users.some(
+        (u) => (u.email || "").toLowerCase() === emailLower
+      );
+
+      if (exists) {
+        if (msg) msg.textContent = "That email is already registered.";
+        return;
+      }
+
+      // save to user database
+      users.push({ name, email, password });
+      saveUsers(users);
+
+      // set "current session"
+      localStorage.setItem(CURRENT_KEY, email);
+
+      // keep your existing keys for display/compatibility
       localStorage.setItem("af_user", name);
       localStorage.setItem("af_user_email", email);
-      localStorage.setItem("af_user_password", password);
 
       window.location.href = "mainpage.html";
     }
@@ -89,23 +141,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = emailEl ? emailEl.value.trim() : "";
       const password = pwInput ? pwInput.value : "";
 
-      const storedEmail = localStorage.getItem("af_user_email");
-      const storedPassword = localStorage.getItem("af_user_password");
+      const users = loadUsers();
+      const emailLower = email.toLowerCase();
 
-      if (email === storedEmail && password === storedPassword) {
+      const user = users.find(
+        (u) => (u.email || "").toLowerCase() === emailLower && u.password === password
+      );
+
+      if (user) {
+        // set "current session"
+        localStorage.setItem(CURRENT_KEY, user.email);
+
+        // keep your existing keys for display/compatibility
+        localStorage.setItem("af_user", user.name);
+        localStorage.setItem("af_user_email", user.email);
+
         window.location.href = "mainpage.html";
       } else {
         if (msg) msg.textContent = "Invalid email or password.";
       }
     }
   });
-
-  if (
-    !localStorage.getItem("af_user_email") &&
-    !localStorage.getItem("af_user_password")
-  ) {
-    localStorage.setItem("af_user", "Demo User");
-    localStorage.setItem("af_user_email", "demo@archersforum.com");
-    localStorage.setItem("af_user_password", "demo1234");
-  }
 });

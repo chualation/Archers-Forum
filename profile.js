@@ -329,6 +329,14 @@
     navigateWithFade("mainpage.html");
   };
 
+  function animateContentIn(el) {
+    if (!el) return;
+    el.classList.remove("content-in");
+    void el.offsetWidth;
+    el.classList.add("content-in");
+  }
+
+
   window.switchTab = function (clickedTab, tabType) {
     document.querySelectorAll(".profile-tab").forEach((tab) => {
       tab.classList.remove("profile-tab-active");
@@ -342,18 +350,29 @@
       if (threadsContent) threadsContent.style.display = "block";
       if (repliesContent) repliesContent.style.display = "none";
       renderUserThreads();
+      animateContentIn(threadsContent);
     } else {
       if (threadsContent) threadsContent.style.display = "none";
       if (repliesContent) repliesContent.style.display = "block";
       renderUserReplies();
+      animateContentIn(repliesContent);
     }
   };
+
 
   window.openEditModal = function () {
     const modal = document.getElementById("editProfileModal");
     if (!modal) return;
 
+    // show first (so transitions can run)
     modal.style.display = "block";
+    document.body.classList.add("modal-open");
+
+    // animate in
+    requestAnimationFrame(() => {
+      modal.classList.remove("closing");
+      modal.classList.add("open");
+    });
 
     const parts = getNameParts(localStorage.getItem("af_user") || name);
     setValue("firstName", parts.first);
@@ -363,7 +382,7 @@
     // Load current images or defaults
     const savedCover = localStorage.getItem(PROFILE_KEYS.COVER);
     const savedAvatar = localStorage.getItem(PROFILE_KEYS.AVATAR);
-    
+
     setSrc("previewImg", savedAvatar || DEFAULTS.AVATAR);
     setSrc("editCoverPreview", savedCover || DEFAULTS.COVER);
 
@@ -372,8 +391,20 @@
 
   window.closeEditModal = function () {
     const modal = document.getElementById("editProfileModal");
-    if (modal) modal.style.display = "none";
+    if (!modal) return;
+
+    // animate out
+    modal.classList.remove("open");
+    modal.classList.add("closing");
+    document.body.classList.remove("modal-open");
+
+    // after transition, fully hide
+    window.setTimeout(() => {
+      modal.style.display = "none";
+      modal.classList.remove("closing");
+    }, 180);
   };
+
 
   window.triggerCoverPicker = function () {
     const input = document.getElementById("coverPicture");
@@ -465,7 +496,7 @@
   // Load default tab content (threads)
   renderUserThreads();
 
-  // Public function to refresh profile data (can be called from outside)
+  // Public function to refresh profile data 
   window.refreshProfileData = function() {
     computeStats();
     renderUserThreads();
@@ -475,3 +506,4 @@
   };
 
 })();
+

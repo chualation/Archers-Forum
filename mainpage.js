@@ -345,12 +345,15 @@ hydrateHeaderUser();
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
+
+      localStorage.removeItem("af_current_email");
       localStorage.removeItem("af_user");
       localStorage.removeItem("af_user_email");
-      localStorage.removeItem("af_user_password");
+
       navigateWithFade("login.html");
     });
   }
+
 
   let posts = loadJSON(POSTS_KEY, []);
   let votesByUser = loadJSON(VOTES_KEY, {});
@@ -1467,3 +1470,4 @@ hydrateHeaderUser();
   }
 
 })();
+

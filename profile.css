@@ -730,3 +730,117 @@ body.modal-open {
 [data-theme="dark"] .reply-context small {
   color: #8a8d91 !important;
 }
+
+/* profile page animations */
+body:not(.is-ready) .main-header,
+body:not(.is-ready) .profile-container {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+body.is-ready .main-header,
+body.is-ready .profile-container {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+body.is-ready .profile-container { transition-delay: 90ms; }
+
+body:not(.is-ready) .profile-cover {
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+}
+
+body.is-ready .profile-cover {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  transition: opacity 420ms ease, transform 420ms ease;
+  transition-delay: 40ms;
+}
+
+body:not(.is-ready) .cover-image {
+  transform: translateY(0) scale(1.08);
+  filter: saturate(0.98);
+}
+
+body.is-ready .cover-image {
+  transform: translateY(0) scale(1.05);
+  transition: transform 700ms ease;
+}
+
+/* Avatar pop-in */
+body:not(.is-ready) .profile-avatar-img {
+  transform: translateY(6px) scale(0.98);
+  opacity: 0;
+}
+body.is-ready .profile-avatar-img {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  transition: transform 420ms ease, opacity 420ms ease;
+  transition-delay: 140ms;
+}
+
+/* Stats cards */
+body:not(.is-ready) .profile-stat {
+  opacity: 0;
+  transform: translateY(10px);
+}
+body.is-ready .profile-stat {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+body.is-ready .profile-stat:nth-child(1) { transition-delay: 160ms; }
+body.is-ready .profile-stat:nth-child(2) { transition-delay: 210ms; }
+body.is-ready .profile-stat:nth-child(3) { transition-delay: 260ms; }
+
+/* Tab content fade-in */
+.content-section.content-in {
+  animation: contentIn 220ms ease-out;
+}
+@keyframes contentIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* profile animations */
+.edit-profile-modal {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.edit-profile-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.edit-profile-overlay {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.edit-profile-modal.open .edit-profile-overlay {
+  opacity: 1;
+}
+
+.edit-profile-form {
+  transform: translateY(14px) scale(0.99);
+  opacity: 0;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+.edit-profile-modal.open .edit-profile-form {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.edit-profile-modal.closing {
+  opacity: 0;
+}
+.edit-profile-modal.closing .edit-profile-overlay {
+  opacity: 0;
+}
+.edit-profile-modal.closing .edit-profile-form {
+  transform: translateY(10px) scale(0.99);
+  opacity: 0;
+}
