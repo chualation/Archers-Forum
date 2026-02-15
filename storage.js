@@ -11,7 +11,7 @@ const AF_STORAGE = {
       const raw = localStorage.getItem(key);
       if (!raw) return fallback;
       const data = JSON.parse(raw);
-      return data ?? fallback;ss
+      return data ?? fallback;
     } catch (e) {
       return fallback;
     }
@@ -25,7 +25,7 @@ const AF_STORAGE = {
     localStorage.removeItem(key);
   },
 
-  // For testing/demo purposes: clear all AF-related data
+  // For testing and demo purposes only, not intended for public use.
   clearAll() {
     Object.values(this.KEYS).forEach((k) => localStorage.removeItem(k));
   },
